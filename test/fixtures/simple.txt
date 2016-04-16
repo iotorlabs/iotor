@@ -1,0 +1,8 @@
+# alpha
+alpha = Alpha
+alpha.some.keys = v1
+alpha.other.keys = v2
+
+# beta
+beta = Beta
+beta.some.keys = v3

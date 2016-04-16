@@ -1,0 +1,48 @@
+{
+  "name": "ardco",
+  "version": "0.0.0",
+  "description": "Arduino cmake generator",
+  "license": "MIT",
+  "repository": "taoyuan/ardco",
+  "authors": [
+    {
+      "id": "Yuan Tao",
+      "email": "towyuan@outlook.com",
+      "url": "github.com/taoyuan"
+    }
+  ],
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "bin": {
+    "ardco": "bin/ardco.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    ""
+  ],
+  "dependencies": {
+    "bluebird": "^3.3.5",
+    "co": "^4.6.0",
+    "fs-extra": "^0.26.7",
+    "glob": "^7.0.3",
+    "inquirer": "^1.0.0",
+    "inquirer-menu": "^1.0.0",
+    "interpolate": "^0.1.0",
+    "lodash": "^4.11.1",
+    "needs": "^1.0.2",
+    "nprops": "^2.0.0",
+    "properties": "^1.2.1",
+    "yargs": "^4.6.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "co-mocha": "^1.1.2",
+    "mocha": "^2.4.5"
+  }
+}
