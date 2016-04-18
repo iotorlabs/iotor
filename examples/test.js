@@ -1,10 +1,8 @@
 "use strict";
 
-var _ = require('lodash');
-
 var obj = {};
 
-_.set(obj, 'a.b', '1');
-_.set(obj, 'a.b.c', '2');
+obj['96opt'] = '96 MHz optimized (overclock)';
+obj[new String(2)] = '2 MHz';
 
 console.log(obj);

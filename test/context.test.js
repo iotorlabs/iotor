@@ -1,10 +1,11 @@
 "use strict";
 
 var assert = require('chai').assert;
-var _ = require('lodash');
-var context = require('../lib/context');
+var Context = require('../lib/context');
 
 describe('context', function () {
+
+  var context = new Context(true);
 
   it('should load arduino preferences', function () {
     assert.ok(context.get('board'));

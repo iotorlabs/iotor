@@ -10,7 +10,7 @@ describe('Preferences', function () {
   describe('constructions', function () {
     it('should load from file', function () {
       var prefs = Preferences.loadFromFile(s.fixtures('simple.txt'));
-      assert.deepEqual(prefs.data, {
+      assert.deepEqual(prefs.toObject(), {
         'alpha': 'Alpha',
         'alpha.some.keys': 'v1',
         'alpha.other.keys': 'v2',
@@ -21,7 +21,7 @@ describe('Preferences', function () {
 
     it('should load from string', function () {
       var prefs = Preferences.load(fs.readFileSync(s.fixtures('simple.txt')), 'utf8');
-      assert.deepEqual(prefs.data, {
+      assert.deepEqual(prefs.toObject(), {
         'alpha': 'Alpha',
         'alpha.some.keys': 'v1',
         'alpha.other.keys': 'v2',
@@ -36,14 +36,14 @@ describe('Preferences', function () {
     var prefs = Preferences.loadFromFile(s.fixtures('simple.txt'));
 
     it('topLevel', function () {
-      assert.deepEqual(prefs.topLevel().toJSON(), {
+      assert.deepEqual(prefs.topLevel().toObject(), {
         'alpha': 'Alpha',
         'beta': 'Beta'
       })
     });
 
     it('#firslLevel', function () {
-      assert.deepEqual(prefs.firstLevel().toJSON(), {
+      assert.deepEqual(prefs.firstLevel().toObject(), {
         'alpha': {
           'some.keys': 'v1',
           'other.keys': 'v2'
@@ -55,7 +55,7 @@ describe('Preferences', function () {
     });
 
     it('#subTree', function () {
-      assert.deepEqual(prefs.subTree('alpha').toJSON(), {
+      assert.deepEqual(prefs.subTree('alpha').toObject(), {
         'some.keys': 'v1',
         'other.keys': 'v2'
       });
@@ -70,6 +70,13 @@ describe('Preferences', function () {
         'beta.some.keys = v3\n'
       );
     });
+
+    it.only('#firslLevel', function () {
+      var prefs = Preferences.loadFromFile(s.fixtures('prefs.txt'));
+      console.log(prefs.firstLevel().toObject());
+    });
+
   });
+
 
 });

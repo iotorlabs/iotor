@@ -1,0 +1,57 @@
+speed.96opt=96 MHz optimized (overclock)
+speed.72opt=72 MHz optimized
+speed.48opt=48 MHz optimized
+speed.24opt=24 MHz optimized
+speed.96=96 MHz (overclock)
+speed.72=72 MHz
+speed.48=48 MHz
+speed.24=24 MHz
+speed.16=16 MHz (No USB)
+speed.8=8 MHz (No USB)
+speed.4=4 MHz (No USB)
+speed.2=2 MHz (No USB)
+speed.168opt.build.fcpu=168000000
+speed.168opt.build.flags.optimize=-O
+speed.168opt.build.flags.ldspecs=
+speed.144opt.build.fcpu=144000000
+speed.144opt.build.flags.optimize=-O
+speed.144opt.build.flags.ldspecs=
+speed.120opt.build.fcpu=120000000
+speed.120opt.build.flags.optimize=-O
+speed.120opt.build.flags.ldspecs=
+speed.96opt.build.fcpu=96000000
+speed.96opt.build.flags.optimize=-O
+speed.96opt.build.flags.ldspecs=
+speed.72opt.build.fcpu=72000000
+speed.72opt.build.flags.optimize=-O
+speed.72opt.build.flags.ldspecs=
+speed.48opt.build.fcpu=48000000
+speed.48opt.build.flags.optimize=-O
+speed.48opt.build.flags.ldspecs=
+speed.24opt.build.fcpu=24000000
+speed.24opt.build.flags.optimize=-O
+speed.24opt.build.flags.ldspecs=
+speed.96.build.fcpu=96000000
+speed.96.build.flags.optimize=-Os
+speed.96.build.flags.ldspecs=--specs=nano.specs
+speed.72.build.fcpu=72000000
+speed.72.build.flags.optimize=-Os
+speed.72.build.flags.ldspecs=--specs=nano.specs
+speed.48.build.fcpu=48000000
+speed.48.build.flags.optimize=-Os
+speed.48.build.flags.ldspecs=--specs=nano.specs
+speed.24.build.fcpu=24000000
+speed.24.build.flags.optimize=-Os
+speed.24.build.flags.ldspecs=--specs=nano.specs
+speed.16.build.fcpu=16000000
+speed.16.build.flags.optimize=-Os
+speed.16.build.flags.ldspecs=--specs=nano.specs
+speed.8.build.fcpu=8000000
+speed.8.build.flags.optimize=-Os
+speed.8.build.flags.ldspecs=--specs=nano.specs
+speed.4.build.fcpu=4000000
+speed.4.build.flags.optimize=-Os
+speed.4.build.flags.ldspecs=--specs=nano.specs
+speed.2.build.fcpu=2000000
+speed.2.build.flags.optimize=-Os
+speed.2.build.flags.ldspecs=--specs=nano.specs
