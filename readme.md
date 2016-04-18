@@ -1,6 +1,6 @@
-# ardco
+# naco
 
-> Arduino cmake generator
+> Node Arduino CMake generator
 
 __DEVELOPING, NOT WORK NOW!__
 

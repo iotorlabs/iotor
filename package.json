@@ -1,9 +1,9 @@
 {
-  "name": "ardco",
+  "name": "naco",
   "version": "0.0.0",
-  "description": "Arduino cmake generator",
+  "description": "Node Arduino CMake generator.",
   "license": "MIT",
-  "repository": "taoyuan/ardco",
+  "repository": "taoyuan/naco",
   "authors": [
     {
       "id": "Yuan Tao",
@@ -18,7 +18,7 @@
     "test": "mocha"
   },
   "bin": {
-    "ardco": "bin/ardco.js"
+    "naco": "bin/naco.js"
   },
   "files": [
     "index.js"
@@ -34,12 +34,9 @@
     "glob": "^7.0.3",
     "handlebars": "^4.0.5",
     "inquirer": "^1.0.0",
-    "inquirer-menu": "^1.0.0",
     "interpolate": "^0.1.0",
     "lodash": "^4.11.1",
     "needs": "^1.0.2",
-    "nprops": "^2.0.0",
-    "properties": "^1.2.1",
     "yargs": "^4.6.0"
   },
   "devDependencies": {
