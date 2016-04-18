@@ -71,10 +71,10 @@ describe('Preferences', function () {
       );
     });
 
-    it.only('#firslLevel', function () {
-      var prefs = Preferences.loadFromFile(s.fixtures('prefs.txt'));
-      console.log(prefs.firstLevel().toObject());
-    });
+    // it('#firslLevel', function () {
+    //   // var prefs = Preferences.loadFromFile(s.fixtures('prefs.txt'));
+    //   // console.log(prefs.firstLevel().toObject());
+    // });
 
   });
 
