@@ -3,12 +3,35 @@
 # Do not modify this file -- YOUR CHANGES WILL BE ERASED!
 #=============================================================================
 set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+set(CMAKE_CROSSCOMPILING 1)
 
+{{!--
+set(TRIPLE "arm-none-eabi")
+set(TOOLCHAIN_ROOT "/usr/local")
+if(WIN32)
+set(TOOL_OS_SUFFIX .exe)
+else(WIN32)
+set(TOOL_OS_SUFFIX )
+endif(WIN32)
+set(CMAKE_C_COMPILER "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-gcc${TOOL_OS_SUFFIX}" CACHE PATH "gcc" FORCE)
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-g++${TOOL_OS_SUFFIX}" CACHE PATH "g++" FORCE)
+set(CMAKE_AR "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-ar${TOOL_OS_SUFFIX}" CACHE PATH "archive" FORCE)
+set(CMAKE_LINKER "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-ld${TOOL_OS_SUFFIX}" CACHE PATH "linker" FORCE)
+set(CMAKE_NM "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-nm${TOOL_OS_SUFFIX}" CACHE PATH "nm" FORCE)
+set(CMAKE_OBJCOPY "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-objcopy${TOOL_OS_SUFFIX}" CACHE PATH "objcopy" FORCE)
+set(CMAKE_OBJDUMP "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-objdump${TOOL_OS_SUFFIX}" CACHE PATH "objdump" FORCE)
+set(CMAKE_STRIP "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-strip${TOOL_OS_SUFFIX}" CACHE PATH "strip" FORCE)
+set(CMAKE_RANLIB "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-ranlib${TOOL_OS_SUFFIX}" CACHE PATH "ranlib" FORCE)
+--}}
 {{#if recipe_c_o_argv_cmd}}
 set(CMAKE_C_COMPILER "{{recipe_c_o_argv_cmd}}" CACHE PATH "gcc" FORCE)
 {{/if}}
 {{#if recipe_cpp_o_argv_cmd}}
 set(CMAKE_CXX_COMPILER "{{recipe_cpp_o_argv_cmd}}" CACHE PATH "g++" FORCE)
+{{/if}}
+{{#if recipe_S_o_argv_cmd}}
+set(CMAKE_S_COMPILER "{{recipe_S_o_argv_cmd}}" CACHE PATH "g++" FORCE)
 {{/if}}
 {{#if recipe_ar_argv_cmd}}
 set(CMAKE_AR "{{recipe_ar_argv_cmd}}" CACHE PATH "archive" FORCE)
@@ -30,12 +53,13 @@ set(CMAKE_RANLIB "${TOOLCHAIN_ROOT}/bin/${TRIPLE}-ranlib${TOOL_OS_SUFFIX}" CACHE
 
 
 set(BUILD_PATH ${CMAKE_BINARY_DIR})
+set(BUILD_PROJECT_NAME ${PROJECT_NAME})
 
 #=============================================================================
 #                              C Flags
 #=============================================================================
 function(get_arduino_c_flags COMPILE_FLAGS_VAR)
-set(${COMPILE_FLAGS_VAR} "{{recipe_c_o_argv_flags}}")
+set(${COMPILE_FLAGS_VAR} "{{recipe_c_o_argv_flags}}" PARENT_SCOPE)
 endfunction()
 
 if (NOT DEFINED ARDUINO_C_FLAGS)
@@ -52,7 +76,7 @@ set(CMAKE_C_FLAGS_RELWITHDEBINFO "${ARDUINO_C_FLAGS}" CACHE STRING "")
 #                             C++ Flags
 #=============================================================================
 function(get_arduino_cxx_flags COMPILE_FLAGS_VAR)
-set(${COMPILE_FLAGS_VAR} "{{recipe_cpp_o_argv_flags}}")
+set(${COMPILE_FLAGS_VAR} "{{recipe_cpp_o_argv_flags}}" PARENT_SCOPE)
 endfunction()
 
 if (NOT DEFINED ARDUINO_CXX_FLAGS)
@@ -65,10 +89,26 @@ set(CMAKE_CXX_FLAGS_RELEASE        "${ARDUINO_CXX_FLAGS}" CACHE STRING "")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${ARDUINO_CXX_FLAGS}" CACHE STRING "")
 
 #=============================================================================
+#                              S Flags
+#=============================================================================
+function(get_arduino_s_flags COMPILE_FLAGS_VAR)
+set(${COMPILE_FLAGS_VAR} "{{recipe_S_o_argv_flags}}" PARENT_SCOPE)
+endfunction()
+
+if (NOT DEFINED ARDUINO_S_FLAGS)
+set(ARDUINO_S_FLAGS "{{recipe_S_o_argv_flags}}")
+endif (NOT DEFINED ARDUINO_S_FLAGS)
+set(CMAKE_S_FLAGS                "${ARDUINO_S_FLAGS}" CACHE STRING "")
+set(CMAKE_S_FLAGS_DEBUG          "${ARDUINO_S_FLAGS}" CACHE STRING "")
+set(CMAKE_S_FLAGS_MINSIZEREL     "${ARDUINO_S_FLAGS}" CACHE STRING "")
+set(CMAKE_S_FLAGS_RELEASE        "${ARDUINO_S_FLAGS}" CACHE STRING "")
+set(CMAKE_S_FLAGS_RELWITHDEBINFO "${ARDUINO_S_FLAGS}" CACHE STRING "")
+
+#=============================================================================
 #                             Linker Flags
 #=============================================================================
 function(get_arduino_linker_flags LINKER_FLAGS_VAR)
-set(${LINKER_FLAGS_VAR} "{{recipe_c_combine_argv_flags}}")
+set(${LINKER_FLAGS_VAR} "{{recipe_c_combine_argv_flags}}" PARENT_SCOPE)
 endfunction()
 
 #=============================================================================

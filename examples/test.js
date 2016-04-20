@@ -1,7 +1,9 @@
 "use strict";
 
-var regex = /"([^"]+)"|([^ ]+)/g;
+var Arduino = require('../lib/arduino');
+var arduino = new Arduino();
 
-console.log('{build.path}/{archive_file}'.replace(regex, function (str, m) {
-  return '${' + m.replace(/\./g, '_').toUpperCase() + '}';
-}));
+// arduino.select('teensy:avr:teensy31');
+arduino.select('Arduino_STM32:STM32F1:mapleMini');
+// arduino.select('arduino:avr:uno');
+console.log(arduino.getPlatformPreferences());
