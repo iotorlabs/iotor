@@ -1,8 +1,7 @@
 "use strict";
 
-var obj = {};
+var regex = /"([^"]+)"|([^ ]+)/g;
 
-obj['96opt'] = '96 MHz optimized (overclock)';
-obj[new String(2)] = '2 MHz';
-
-console.log(obj);
+console.log('{build.path}/{archive_file}'.replace(regex, function (str, m) {
+  return '${' + m.replace(/\./g, '_').toUpperCase() + '}';
+}));

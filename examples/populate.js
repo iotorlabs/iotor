@@ -1,7 +1,9 @@
 "use strict";
 
-var arduino = require('../lib/arduino');
+var Arduino = require('../lib/arduino');
+var arduino = new Arduino();
 
 // arduino.select('teensy:avr:teensy31');
 arduino.select('Arduino_STM32:STM32F1:mapleMini');
-console.log(arduino.populate(true));
+// arduino.select('arduino:avr:uno');
+console.log(arduino.populate());

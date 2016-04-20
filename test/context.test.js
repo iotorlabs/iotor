@@ -5,7 +5,8 @@ var Context = require('../lib/context');
 
 describe('context', function () {
 
-  var context = new Context(true);
+  var context = new Context();
+  context.loadArduinoPrefs();
 
   it('should load arduino preferences', function () {
     assert.ok(context.get('board'));
@@ -16,7 +17,7 @@ describe('context', function () {
     assert.ok(context.get('runtime.os'));
     var content = context.serialize();
     assert.include(content, 'board=');
-    assert.notInclude(content, 'runtime.');
+    assert.include(content, 'runtime.');
   });
 
 });

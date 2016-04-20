@@ -3,9 +3,9 @@
 var assert = require('chai').assert;
 var _ = require('lodash');
 var arduino = require('../lib/arduino');
-var template = require('../lib/template');
+var templates = require('../lib/templates');
 
-describe('template', function () {
+describe('templates', function () {
 
   it('should populate toolchain', function () {
     // arduino.select();

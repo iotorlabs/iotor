@@ -1,6 +1,6 @@
 # naco
 
-> Node Arduino CMake generator
+> Naco is an Arduino CMake generator
 
 __DEVELOPING, NOT WORK NOW!__
 

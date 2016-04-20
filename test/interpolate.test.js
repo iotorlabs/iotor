@@ -17,4 +17,26 @@ describe('interpolate', function () {
 
     assert.deepEqual(interpolate(src, data), { 'a.b': 'bar', 'c.d': 'bar' });
   });
+
+  it('should interpolate with uninterpolate string', function () {
+    var src = {
+      'x': '{y}'
+    };
+
+    assert.deepEqual(interpolate(src, {}, {
+      uninterpolated: 'hello'
+    }), { 'x': 'hello' });
+  });
+
+  it('should interpolate with uninterpolate function', function () {
+    var src = {
+      'x': '{y}'
+    };
+
+    assert.deepEqual(interpolate(src, {}, {
+      uninterpolated: function (v) {
+        return 'hello ' + v
+      }
+    }), { 'x': 'hello y' });
+  });
 });
