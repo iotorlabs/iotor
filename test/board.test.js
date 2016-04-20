@@ -2,7 +2,7 @@
 
 var assert = require('chai').assert;
 var _ = require('lodash');
-var Arduino = require('..').Arduino;
+var Arduino = require('..');
 
 describe('arduino', function () {
 
