@@ -148,7 +148,7 @@ function(setup_arduino_core VAR_NAME)
     if (NOT TARGET ${CORE_LIB_NAME})
       find_c_sources(CORE_C_FILES ${BOARD_CORE_PATH} True)
       find_cxx_sources(CORE_CXX_FILES ${BOARD_CORE_PATH} True)
-      find_s_sources(CORE_S_FILES ${BOARD_CORE_PATH} True)
+      find_asm_sources(CORE_ASM_FILES ${BOARD_CORE_PATH} True)
 
       # Debian/Ubuntu fix
       list(REMOVE_ITEM CORE_CXX_FILES "${BOARD_CORE_PATH}/main.cxx")
@@ -156,18 +156,19 @@ function(setup_arduino_core VAR_NAME)
       add_library(${CORE_LIB_NAME}
           ${CORE_C_FILES}
           ${CORE_CXX_FILES}
-          ${CORE_S_FILES})
+          ${CORE_ASM_FILES})
 
       get_arduino_flags(ARDUINO_C_FLAGS ARDUINO_CXX_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
+
       set_source_files_properties(${CORE_C_FILES}
           PROPERTIES COMPILE_FLAGS ${ARDUINO_C_FLAGS})
       set_source_files_properties(${CORE_CXX_FILES}
           PROPERTIES COMPILE_FLAGS ${ARDUINO_CXX_FLAGS})
 
       # S Files
-      get_arduino_s_flags(ARDUINO_S_FLAGS)
-      set_source_files_properties(${CORE_S_FILES}
-          PROPERTIES LANGUAGE C COMPILE_FLAGS ${ARDUINO_S_FLAGS})
+      get_arduino_asm_flags(ARDUINO_ASM_FLAGS)
+      set_source_files_properties(${CORE_ASM_FILES}
+          PROPERTIES LANGUAGE C COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
 
       set_target_properties(${CORE_LIB_NAME} PROPERTIES
           LINK_FLAGS "${ARDUINO_LINK_FLAGS}")
@@ -193,6 +194,7 @@ endfunction()
 #=============================================================================#
 function(get_arduino_flags COMPILE_C_FLAGS_VAR COMPILE_CXX_FLAGS_VAR LINK_FLAGS_VAR BOARD_ID MANUAL)
   if (BOARD_CORE_PATH)
+
     # output
     set(COMPILE_FLAGS "")
 
@@ -222,6 +224,7 @@ function(get_arduino_flags COMPILE_C_FLAGS_VAR COMPILE_CXX_FLAGS_VAR LINK_FLAGS_
     set(${COMPILE_C_FLAGS_VAR} "${ARDUINO_C_FLAGS} ${COMPILE_FLAGS}" PARENT_SCOPE)
     set(${COMPILE_CXX_FLAGS_VAR} "${ARDUINO_CXX_FLAGS} ${COMPILE_FLAGS}" PARENT_SCOPE)
     set(${LINK_FLAGS_VAR} "${ARDUINO_LINKER_FLAGS} ${LINK_FLAGS}" PARENT_SCOPE)
+
   else ()
     message(FATAL_ERROR "No board core path has been set (${BOARD_CORE_PATH}), aborting.")
   endif ()
@@ -324,7 +327,7 @@ endfunction()
 #=============================================================================#
 # [PRIVATE/INTERNAL]
 #
-# find_s_sources(VAR_NAME LIB_PATH RECURSE)
+# find_asm_sources(VAR_NAME LIB_PATH RECURSE)
 #
 #        VAR_NAME - Variable name that will hold the detected sources
 #        LIB_PATH - The base path
@@ -333,7 +336,7 @@ endfunction()
 # Finds all S sources located at the specified path.
 #
 #=============================================================================#
-function(find_s_sources VAR_NAME LIB_PATH RECURSE)
+function(find_asm_sources VAR_NAME LIB_PATH RECURSE)
   set(FILE_SEARCH_LIST
       ${LIB_PATH}/*.s)
 
@@ -462,7 +465,7 @@ function(setup_arduino_library VAR_NAME BOARD_ID LIB_PATH COMPILE_FLAGS LINK_FLA
       include_directories(${LIB_PATH}/src)
       include_directories(${LIB_PATH}/utility)
 
-      get_arduino_flags(ARDUINO_COMPILE_C_FLAGS ARDUINO_COMPILE_CXX_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
+      get_arduino_flags(ARDUINO_C_FLAGS ARDUINO_CXX_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
       #      get_arduino_flags(ARDUINO_COMPILE_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
 
       find_arduino_libraries(LIB_DEPS "${LIB_SRCS}" "")
@@ -488,9 +491,9 @@ function(setup_arduino_library VAR_NAME BOARD_ID LIB_PATH COMPILE_FLAGS LINK_FLA
       set(ADDITIONAL_COMPILER_FLAGS "${LIB_INCLUDES} -I\"${LIB_PATH}\" -I\"${LIB_PATH}/src\" -I\"${LIB_PATH}/utility\" ${COMPILE_FLAGS}")
 
       set_source_files_properties(${LIB_C_FILES}
-          PROPERTIES COMPILE_FLAGS "${ARDUINO_COMPILE_C_FLAGS} ${ADDITIONAL_COMPILER_FLAGS}")
+          PROPERTIES COMPILE_FLAGS "${ARDUINO_C_FLAGS} ${ADDITIONAL_COMPILER_FLAGS}")
       set_source_files_properties(${LIB_CXX_FILES}
-          PROPERTIES COMPILE_FLAGS "${ARDUINO_COMPILE_CXX_FLAGS} ${ADDITIONAL_COMPILER_FLAGS}")
+          PROPERTIES COMPILE_FLAGS "${ARDUINO_CXX_FLAGS} ${ADDITIONAL_COMPILER_FLAGS}")
       set_target_properties(${TARGET_LIB_NAME} PROPERTIES
           LINK_FLAGS "${ARDUINO_LINK_FLAGS} ${LINK_FLAGS}")
 
@@ -560,24 +563,21 @@ endfunction()
 #=============================================================================#
 function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLAGS LINK_FLAGS MANUAL)
 
-  find_s_sources(S_FILES ${BOARD_VARIANT_PATH} True)
+  find_asm_sources(S_FILES ${BOARD_VARIANT_PATH} True)
 
   if (S_FILES)
-    get_arduino_s_flags(ARDUINO_S_FLAGS)
-    set_source_files_properties(${S_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_S_FLAGS})
+    get_arduino_asm_flags(ARDUINO_ASM_FLAGS)
+    set_source_files_properties(${S_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
     set(ALL_SRCS ${S_FILES} ${ALL_SRCS})
-    print_list(ALL_SRCS)
   endif ()
 
   add_executable(${TARGET_NAME} ${ALL_SRCS})
   set_target_properties(${TARGET_NAME} PROPERTIES SUFFIX ".elf")
 
-  get_arduino_flags(ARDUINO_COMPILE_C_FLAGS ARDUINO_COMPILE_CXX_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} ${MANUAL})
-
-  #  message(${ARDUINO_COMPILE_CXX_FLAGS} ${COMPILE_FLAGS})
+  get_arduino_flags(ARDUINO_C_FLAGS ARDUINO_CXX_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
 
   set_target_properties(${TARGET_NAME} PROPERTIES
-      COMPILE_FLAGS "${ARDUINO_COMPILE_CXX_FLAGS} ${COMPILE_FLAGS}"
+      COMPILE_FLAGS "${ARDUINO_CXX_FLAGS} ${COMPILE_FLAGS}"
       LINK_FLAGS "${ARDUINO_LINK_FLAGS} ${LINK_FLAGS}")
   target_link_libraries(${TARGET_NAME} ${ALL_LIBS} "-lc -lm")
 
@@ -587,6 +587,7 @@ function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLA
   set(TARGET_PATH ${EXECUTABLE_OUTPUT_PATH}/${TARGET_NAME})
 
   message(STATUS "Using ${CMAKE_OBJCOPY} for converting firmware image to hex")
+
   add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
       COMMAND ${CMAKE_OBJCOPY}
       ARGS ${ARDUINO_OBJCOPY_EEP_FLAGS}
@@ -858,7 +859,7 @@ if (NOT ARDUINO_INITIALIZED)
   # Setup Toolchain
   set(NACO_PROGRAM "naco")
   if (NOT MMANUAL_SETUP)
-    set(TOOLCHAIN_FILE_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/ArduinoToolchain.cmake)
+    set(TOOLCHAIN_FILE_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/ArduinoInfomation.cmake)
     execute_process(COMMAND "${NACO_PROGRAM}" "gen" "-o${TOOLCHAIN_FILE_PATH}"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     include(${TOOLCHAIN_FILE_PATH})
