@@ -1,9 +1,9 @@
 {
-  "name": "naco",
+  "name": "ano",
   "version": "0.0.0",
-  "description": "Naco is an Arduino CMake generator.",
+  "description": "Ano is an Arduino CMake generator.",
   "license": "MIT",
-  "repository": "taoyuan/naco",
+  "repository": "taoyuan/ano",
   "authors": [
     {
       "id": "Yuan Tao",
@@ -18,7 +18,7 @@
     "test": "mocha"
   },
   "bin": {
-    "naco": "bin/naco.js"
+    "ano": "bin/ano.js"
   },
   "main": "lib/index",
   "keywords": [

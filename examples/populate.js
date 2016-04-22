@@ -1,6 +1,6 @@
 "use strict";
 
-var Arduino = require('../lib/arduino');
+var Arduino = require('../lib/arduino/arduino');
 var arduino = new Arduino();
 
 // arduino.select('teensy:avr:teensy31');

@@ -857,7 +857,7 @@ endfunction()
 if (NOT ARDUINO_INITIALIZED)
 
   # Setup Toolchain
-  set(NACO_PROGRAM "naco")
+  set(NACO_PROGRAM "ano")
   if (NOT MMANUAL_SETUP)
     set(TOOLCHAIN_FILE_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/ArduinoInfomation.cmake)
     execute_process(COMMAND "${NACO_PROGRAM}" "gen" "-o${TOOLCHAIN_FILE_PATH}"

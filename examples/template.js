@@ -1,7 +1,7 @@
 "use strict";
 
 var util = require('util');
-var Arduino = require('../lib/arduino');
+var Arduino = require('../lib/arduino/arduino');
 var templates = require('../lib/templates');
 
 var arduino = new Arduino();

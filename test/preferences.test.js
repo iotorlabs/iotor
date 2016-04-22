@@ -3,7 +3,7 @@
 var assert = require('chai').assert;
 var fs = require('fs');
 var s = require('./support');
-var Preferences = require('../lib/preferences');
+var Preferences = require('../lib/arduino/preferences');
 
 describe('Preferences', function () {
 

@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require('chai').assert;
-var Context = require('../lib/context');
+var Context = require('../lib/arduino/context');
 
 describe('context', function () {
 

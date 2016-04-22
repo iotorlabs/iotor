@@ -1,6 +1,6 @@
-# naco
+# ano
 
-> Naco is an Arduino CMake generator
+> Ano is an Arduino CMake generator
 
 __DEVELOPING, NOT WORK NOW!__
 

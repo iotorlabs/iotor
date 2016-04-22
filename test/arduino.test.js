@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require('chai').assert;
-var Arduino = require('../lib/arduino');
+var Arduino = require('../').Arduino;
 
 describe('arduino', function () {
 

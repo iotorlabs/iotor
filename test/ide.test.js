@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require('chai').assert;
-var ide = require('../lib/ide');
+var ide = require('../lib/arduino/ide');
 
 describe('ide', function () {
 
