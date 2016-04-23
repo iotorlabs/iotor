@@ -9,19 +9,10 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
   message(STATUS "Generating ${INPUT_NAME}")
   parse_generator_arguments(${INPUT_NAME} INPUT
       "NO_AUTOLIBS;MANUAL"                  # Options
-      "BOARD;PORT;SKETCH;PROGRAMMER"        # One Value Keywords
+      "SKETCH"        # One Value Keywords
       "SERIAL;SRCS;HDRS;LIBS;ARDLIBS;AFLAGS"  # Multi Value Keywords
       ${ARGN})
 
-  if (NOT INPUT_PORT)
-    set(INPUT_PORT ${ARDUINO_DEFAULT_PORT})
-  endif ()
-  if (NOT INPUT_SERIAL)
-    set(INPUT_SERIAL ${ARDUINO_DEFAULT_SERIAL})
-  endif ()
-  if (NOT INPUT_PROGRAMMER)
-    set(INPUT_PROGRAMMER ${ARDUINO_DEFAULT_PROGRAMMER})
-  endif ()
   if (NOT INPUT_MANUAL)
     set(INPUT_MANUAL FALSE)
   endif ()
@@ -32,6 +23,7 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
 
   if (NOT INPUT_MANUAL)
     setup_arduino_core(CORE_LIB ${BOARD_ID})
+#    setup_arduino_variant(VARIANT_LIB ${BOARD_ID})
   endif ()
 
   if (NOT "${INPUT_SKETCH}" STREQUAL "")
@@ -65,8 +57,8 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
 
   setup_arduino_target(${INPUT_NAME} ${BOARD_ID} "${ALL_SRCS}" "${ALL_LIBS}" "${LIB_DEP_INCLUDES}" "" "${INPUT_MANUAL}")
 
-  if (INPUT_PORT)
-    setup_arduino_upload(${BOARD_ID} ${INPUT_NAME} ${INPUT_PORT} "${INPUT_PROGRAMMER}" "${INPUT_AFLAGS}")
+  if (SERIAL_PORT)
+    setup_arduino_upload(${INPUT_NAME})
   endif ()
 
   if (INPUT_SERIAL)
@@ -146,37 +138,65 @@ function(setup_arduino_core VAR_NAME)
   set(CORE_LIB_NAME ${BOARD_ID}_CORE)
   if (BOARD_CORE_PATH)
     if (NOT TARGET ${CORE_LIB_NAME})
-      find_c_sources(CORE_C_FILES ${BOARD_CORE_PATH} True)
-      find_cxx_sources(CORE_CXX_FILES ${BOARD_CORE_PATH} True)
-      find_asm_sources(CORE_ASM_FILES ${BOARD_CORE_PATH} True)
+
+      set(ALL_SRCS)
+      get_arduino_flags(ARDUINO_C_FLAGS ARDUINO_CXX_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
+      get_arduino_asm_flags(ARDUINO_ASM_FLAGS)
+
+      # Find C files
+      find_c_sources(C_FILES ${BOARD_CORE_PATH} True)
+      if (C_FILES)
+        set_source_files_properties(${C_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_C_FLAGS})
+        set(ALL_SRCS ${C_FILES} ${ALL_SRCS})
+      endif ()
+
+      find_c_sources(C_FILES ${BOARD_VARIANT_PATH} True)
+      if (C_FILES)
+        set_source_files_properties(${C_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_C_FLAGS})
+        set(ALL_SRCS ${C_FILES} ${ALL_SRCS})
+      endif ()
+
+
+
+      # Find CPP files
+      find_cxx_sources(CXX_FILES ${BOARD_CORE_PATH} True)
+      if (CXX_FILES)
+        set_source_files_properties(${CXX_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_CXX_FLAGS})
+        set(ALL_SRCS ${CXX_FILES} ${ALL_SRCS})
+      endif ()
+
+      find_cxx_sources(CXX_FILES ${BOARD_VARIANT_PATH} True)
+      if (CXX_FILES)
+        set_source_files_properties(${CXX_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_CXX_FLAGS})
+        set(ALL_SRCS ${CXX_FILES} ${ALL_SRCS})
+      endif ()
+
+      # Finf ASM files
+      find_asm_sources(ASM_FILES ${BOARD_CORE_PATH} True)
+      if (ASM_FILES)
+        set_source_files_properties(${ASM_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
+        set(ALL_SRCS ${ASM_FILES} ${ALL_SRCS})
+      endif ()
+
+      find_asm_sources(ASM_FILES ${BOARD_VARIANT_PATH} True)
+      if (ASM_FILES)
+        set_source_files_properties(${ASM_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
+        set(ALL_SRCS ${ASM_FILES} ${ALL_SRCS})
+      endif ()
 
       # Debian/Ubuntu fix
-      list(REMOVE_ITEM CORE_CXX_FILES "${BOARD_CORE_PATH}/main.cxx")
+      list(REMOVE_ITEM ALL_SRCS "${BOARD_CORE_PATH}/main.cxx")
 
-      add_library(${CORE_LIB_NAME}
-          ${CORE_C_FILES}
-          ${CORE_CXX_FILES}
-          ${CORE_ASM_FILES})
+#        message(-----)
+#        print_list(ALL_SRCS)
+#        message(-----)
 
-      get_arduino_flags(ARDUINO_C_FLAGS ARDUINO_CXX_FLAGS ARDUINO_LINK_FLAGS ${BOARD_ID} FALSE)
-
-      set_source_files_properties(${CORE_C_FILES}
-          PROPERTIES COMPILE_FLAGS ${ARDUINO_C_FLAGS})
-      set_source_files_properties(${CORE_CXX_FILES}
-          PROPERTIES COMPILE_FLAGS ${ARDUINO_CXX_FLAGS})
-
-      # S Files
-      get_arduino_asm_flags(ARDUINO_ASM_FLAGS)
-      set_source_files_properties(${CORE_ASM_FILES}
-          PROPERTIES LANGUAGE C COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
-
-      set_target_properties(${CORE_LIB_NAME} PROPERTIES
-          LINK_FLAGS "${ARDUINO_LINK_FLAGS}")
+      add_library(${CORE_LIB_NAME} ${ALL_SRCS})
+      set_target_properties(${CORE_LIB_NAME} PROPERTIES LINK_FLAGS "${ARDUINO_LINK_FLAGS}")
     endif ()
     set(${VAR_NAME} ${CORE_LIB_NAME} PARENT_SCOPE)
   endif ()
 endfunction()
-
 
 #=============================================================================#
 # [PRIVATE/INTERNAL]
@@ -563,13 +583,13 @@ endfunction()
 #=============================================================================#
 function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLAGS LINK_FLAGS MANUAL)
 
-  find_asm_sources(S_FILES ${BOARD_VARIANT_PATH} True)
+  #  find_asm_sources(S_FILES ${BOARD_VARIANT_PATH} True)
 
-  if (S_FILES)
-    get_arduino_asm_flags(ARDUINO_ASM_FLAGS)
-    set_source_files_properties(${S_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
-    set(ALL_SRCS ${S_FILES} ${ALL_SRCS})
-  endif ()
+  #  if (S_FILES)
+  #    get_arduino_asm_flags(ARDUINO_ASM_FLAGS)
+  #    set_source_files_properties(${S_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
+  #    set(ALL_SRCS ${S_FILES} ${ALL_SRCS})
+  #  endif ()
 
   add_executable(${TARGET_NAME} ${ALL_SRCS})
   set_target_properties(${TARGET_NAME} PROPERTIES SUFFIX ".elf")
@@ -608,13 +628,13 @@ function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLA
   #  # Display target size
   #  add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
   #      COMMAND ${CMAKE_COMMAND}
-  #      ARGS    -DFIRMWARE_IMAGE=${TARGET_PATH}.elf
+  #      ARGS -DFIRMWARE_IMAGE=${TARGET_PATH}.elf
   #      -DMCU=${${BOARD_ID}${ARDUINO_CPUMENU}.build.mcu}
   #      -DEEPROM_IMAGE=${TARGET_PATH}.eep
   #      -P ${ARDUINO_SIZE_SCRIPT}
   #      COMMENT "Calculating image size"
   #      VERBATIM)
-  #
+
   #  # Create ${TARGET_NAME}-size target
   #  add_custom_target(${TARGET_NAME}-size
   #      COMMAND ${CMAKE_COMMAND}
@@ -641,54 +661,55 @@ endfunction()
 # Create an upload target (${TARGET_NAME}-upload) for the specified Arduino target.
 #
 #=============================================================================#
-function(setup_arduino_upload BOARD_ID TARGET_NAME PORT PROGRAMMER_ID AVRDUDE_FLAGS)
-  setup_arduino_bootloader_upload(${TARGET_NAME} ${BOARD_ID} ${PORT} "${AVRDUDE_FLAGS}")
+function(setup_arduino_upload TARGET_NAME)
+  setup_arduino_bootloader_upload(${TARGET_NAME})
 
   # Add programmer support if defined
-  if (PROGRAMMER_ID AND ${PROGRAMMER_ID}.protocol)
-    setup_arduino_programmer_burn(${TARGET_NAME} ${BOARD_ID} ${PROGRAMMER_ID} ${PORT} "${AVRDUDE_FLAGS}")
-    setup_arduino_bootloader_burn(${TARGET_NAME} ${BOARD_ID} ${PROGRAMMER_ID} ${PORT} "${AVRDUDE_FLAGS}")
-  endif ()
+  #  if (PROGRAMMER_ID AND ${PROGRAMMER_ID}.protocol)
+  #    setup_arduino_programmer_burn(${TARGET_NAME} ${BOARD_ID} ${PROGRAMMER_ID} ${PORT} "${AVRDUDE_FLAGS}")
+  #    setup_arduino_bootloader_burn(${TARGET_NAME} ${BOARD_ID} ${PROGRAMMER_ID} ${PORT} "${AVRDUDE_FLAGS}")
+  #  endif ()
 endfunction()
 
 
 #=============================================================================#
 # [PRIVATE/INTERNAL]
 #
-# setup_arduino_bootloader_upload(TARGET_NAME BOARD_ID PORT)
+# setup_arduino_bootloader_upload(TARGET_NAME)
 #
 #      TARGET_NAME - target name
-#      BOARD_ID    - board id
-#      PORT        - serial port
-#      AVRDUDE_FLAGS - avrdude flags (override)
 #
 # Set up target for upload firmware via the bootloader.
 #
 # The target for uploading the firmware is ${TARGET_NAME}-upload .
 #
 #=============================================================================#
-function(setup_arduino_bootloader_upload TARGET_NAME BOARD_ID PORT AVRDUDE_FLAGS)
+function(setup_arduino_bootloader_upload TARGET_NAME)
   set(UPLOAD_TARGET ${TARGET_NAME}-upload)
-  set(AVRDUDE_ARGS)
+  #  set(AVRDUDE_ARGS)
+  #
+  #  setup_arduino_bootloader_args(${BOARD_ID} ${TARGET_NAME} ${PORT} "${AVRDUDE_FLAGS}" AVRDUDE_ARGS)
+  #
+  #  if (NOT AVRDUDE_ARGS)
+  #    message("Could not generate default avrdude bootloader args, aborting!")
+  #    return()
+  #  endif ()
+  #
+  #  if (NOT EXECUTABLE_OUTPUT_PATH)
+  #    set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
+  #  endif ()
+  #  set(TARGET_PATH ${EXECUTABLE_OUTPUT_PATH}/${TARGET_NAME})
+  #
+  #  list(APPEND AVRDUDE_ARGS "-Uflash:w:${TARGET_PATH}.hex:i")
+  #  list(APPEND AVRDUDE_ARGS "-Ueeprom:w:${TARGET_PATH}.eep:i")
 
-  setup_arduino_bootloader_args(${BOARD_ID} ${TARGET_NAME} ${PORT} "${AVRDUDE_FLAGS}" AVRDUDE_ARGS)
-
-  if (NOT AVRDUDE_ARGS)
-    message("Could not generate default avrdude bootloader args, aborting!")
-    return()
-  endif ()
-
-  if (NOT EXECUTABLE_OUTPUT_PATH)
-    set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
-  endif ()
-  set(TARGET_PATH ${EXECUTABLE_OUTPUT_PATH}/${TARGET_NAME})
-
-  list(APPEND AVRDUDE_ARGS "-Uflash:w:${TARGET_PATH}.hex:i")
-  list(APPEND AVRDUDE_ARGS "-Ueeprom:w:${TARGET_PATH}.eep:i")
+  get_arduino_upload_flags(UPLOAD_ARGS ${TARGET_NAME})
   add_custom_target(${UPLOAD_TARGET}
-      ${ARDUINO_AVRDUDE_PROGRAM}
-      ${AVRDUDE_ARGS}
-      DEPENDS ${TARGET_NAME})
+      ${ARDUINO_UPLOAD_PROGRAM}
+      ${UPLOAD_ARGS}
+      DEPENDS ${TARGET_NAME}
+      COMMENT "Uploading HEX image"
+      VERBATIM)
 
   # Global upload target
   if (NOT TARGET upload)
@@ -860,7 +881,7 @@ if (NOT ARDUINO_INITIALIZED)
   set(NACO_PROGRAM "ano")
   if (NOT MMANUAL_SETUP)
     set(TOOLCHAIN_FILE_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/ArduinoInfomation.cmake)
-    execute_process(COMMAND "${NACO_PROGRAM}" "gen" "-o${TOOLCHAIN_FILE_PATH}"
+    execute_process(COMMAND "${NACO_PROGRAM}" "cmake" "-o${TOOLCHAIN_FILE_PATH}"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     include(${TOOLCHAIN_FILE_PATH})
   endif ()

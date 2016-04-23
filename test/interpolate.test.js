@@ -34,8 +34,8 @@ describe('interpolate', function () {
     };
 
     assert.deepEqual(interpolate(src, {}, {
-      uninterpolated: function (v) {
-        return 'hello ' + v
+      uninterpolated: function (text, value) {
+        return 'hello ' + value
       }
     }), { 'x': 'hello y' });
   });

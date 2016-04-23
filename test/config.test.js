@@ -2,18 +2,18 @@
 
 var assert = require('chai').assert;
 var Arduino = require('..').Arduino;
-var Config = require('../lib/arduino/config');
+var Settings = require('../lib/arduino/settings');
 
 describe('arduino', function () {
 
-  it('#Config.load', function () {
+  it('#Settings.load', function () {
     var arduino = new Arduino();
     arduino.select('arduino:avr:diecimila:cpu=atmega168');
 
     assert.equal(arduino.board.id, 'diecimila');
     assert.notOk(arduino.context.get('serial.port'));
 
-    Config.load(arduino, {
+    Settings.load(arduino, {
       board: 'arduino:avr:uno',
       port: 'tty.usbmodem'
     });
@@ -21,13 +21,13 @@ describe('arduino', function () {
     assert.equal(arduino.context.get('serial.port'), 'tty.usbmodem');
   });
 
-  it('#Config.dump', function () {
+  it('#Settings.dump', function () {
     var arduino = new Arduino();
     arduino.select('arduino:avr:diecimila:cpu=atmega168');
     arduino.context.set('serial.port', 'tty.usbmodem');
 
     var data = {name: 'hello'};
-    Config.dump(arduino, data);
+    Settings.dump(arduino, data);
     assert.deepEqual(data, {
       name: 'hello',
       board: 'arduino:avr:diecimila',
