@@ -70,7 +70,7 @@ set(CMAKE_CXX_FLAGS_RELEASE        "${ARDUINO_CXX_FLAGS}" CACHE STRING "")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${ARDUINO_CXX_FLAGS}" CACHE STRING "")
 
 #=============================================================================
-#                              S Flags
+#                              ASM Flags
 #=============================================================================
 function(get_arduino_asm_flags COMPILE_FLAGS_VAR)
 set(${COMPILE_FLAGS_VAR} "{{recipe_S_o_argv_flags}}" PARENT_SCOPE)

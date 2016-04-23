@@ -38,6 +38,7 @@
     "interpolate": "^0.1.0",
     "lodash": "^4.11.1",
     "needs": "^1.0.2",
+    "numeral": "^1.5.3",
     "serialport": "^2.1.0",
     "yamljs": "^0.2.7",
     "yargs": "^4.6.0"

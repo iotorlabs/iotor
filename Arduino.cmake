@@ -23,7 +23,6 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
 
   if (NOT INPUT_MANUAL)
     setup_arduino_core(CORE_LIB ${BOARD_ID})
-#    setup_arduino_variant(VARIANT_LIB ${BOARD_ID})
   endif ()
 
   if (NOT "${INPUT_SKETCH}" STREQUAL "")
@@ -57,9 +56,7 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
 
   setup_arduino_target(${INPUT_NAME} ${BOARD_ID} "${ALL_SRCS}" "${ALL_LIBS}" "${LIB_DEP_INCLUDES}" "" "${INPUT_MANUAL}")
 
-  if (SERIAL_PORT)
-    setup_arduino_upload(${INPUT_NAME})
-  endif ()
+  setup_arduino_upload(${INPUT_NAME})
 
   if (INPUT_SERIAL)
     setup_serial_target(${INPUT_NAME} "${INPUT_SERIAL}" "${INPUT_PORT}")
@@ -157,7 +154,6 @@ function(setup_arduino_core VAR_NAME)
       endif ()
 
 
-
       # Find CPP files
       find_cxx_sources(CXX_FILES ${BOARD_CORE_PATH} True)
       if (CXX_FILES)
@@ -187,9 +183,9 @@ function(setup_arduino_core VAR_NAME)
       # Debian/Ubuntu fix
       list(REMOVE_ITEM ALL_SRCS "${BOARD_CORE_PATH}/main.cxx")
 
-#        message(-----)
-#        print_list(ALL_SRCS)
-#        message(-----)
+      #        message(-----)
+      #        print_list(ALL_SRCS)
+      #        message(-----)
 
       add_library(${CORE_LIB_NAME} ${ALL_SRCS})
       set_target_properties(${CORE_LIB_NAME} PROPERTIES LINK_FLAGS "${ARDUINO_LINK_FLAGS}")
@@ -599,7 +595,7 @@ function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLA
   set_target_properties(${TARGET_NAME} PROPERTIES
       COMPILE_FLAGS "${ARDUINO_CXX_FLAGS} ${COMPILE_FLAGS}"
       LINK_FLAGS "${ARDUINO_LINK_FLAGS} ${LINK_FLAGS}")
-  target_link_libraries(${TARGET_NAME} ${ALL_LIBS} "-lc -lm")
+  target_link_libraries(${TARGET_NAME} ${ALL_LIBS})
 
   if (NOT EXECUTABLE_OUTPUT_PATH)
     set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
@@ -650,13 +646,9 @@ endfunction()
 #=============================================================================#
 # [PRIVATE/INTERNAL]
 #
-# setup_arduino_upload(BOARD_ID TARGET_NAME PORT)
+# setup_arduino_upload(TARGET_NAME)
 #
-#        BOARD_ID    - Arduino board id
 #        TARGET_NAME - Target name
-#        PORT        - Serial port for upload
-#        PROGRAMMER_ID - Programmer ID
-#        AVRDUDE_FLAGS - avrdude flags
 #
 # Create an upload target (${TARGET_NAME}-upload) for the specified Arduino target.
 #
