@@ -7,7 +7,7 @@ describe('ide', function () {
 
 	it('should initialize paths', function () {
     assert.ok(ide.sdkpath);
-    assert.ok(ide.docpath);
+    assert.ok(ide.sketchpath);
     assert.ok(ide.version);
 	});
 

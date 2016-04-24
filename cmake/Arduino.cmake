@@ -250,40 +250,6 @@ endfunction()
 #=============================================================================#
 # [PRIVATE/INTERNAL]
 #
-# find_sources(VAR_NAME PATTERNS LIB_PATHS RECURSE)
-#
-#        VAR_NAME - Variable name that will hold the detected sources
-#        PATTERNS - The file patterns
-#        PATHS - The base paths
-#        RECURSE  - Whether or not to recurse
-#
-# Finds all C/C++ sources located at the specified path.
-#
-#=============================================================================#
-function(find_sources VAR_NAME PATTERNS PATHS RECURSE)
-  list(APPEND LIB_PATHS ${PATHS})
-  list(APPEND LIB_PATTERNS ${PATTERNS})
-
-  set(LIB_FILES)
-  foreach (LIB_PATH ${LIB_PATHS})
-    if (RECURSE)
-      #      message(==== "${LIB_PATH}")
-
-      file(GLOB_RECURSE FILES RELATIVE ${LIB_PATH} ${LIB_PATTERNS})
-    else ()
-      file(GLOB FILES RELATIVE ${LIB_PATH} ${LIB_PATTERNS})
-    endif ()
-    set(LIB_FILES ${LIB_FILES} ${FILES})
-  endforeach ()
-
-  if (LIB_FILES)
-    set(${VAR_NAME} ${LIB_FILES} PARENT_SCOPE)
-  endif ()
-endfunction()
-
-#=============================================================================#
-# [PRIVATE/INTERNAL]
-#
 # find_c_sources(VAR_NAME LIB_PATH RECURSE)
 #
 #        VAR_NAME - Variable name that will hold the detected sources
@@ -427,7 +393,17 @@ function(find_arduino_libraries VAR_NAME SRCS ARDLIBS)
           get_property(LIBRARY_SEARCH_PATH
               DIRECTORY     # Property Scope
               PROPERTY LINK_DIRECTORIES)
-          foreach (LIB_SEARCH_PATH ${include_dirs} ${LIBRARY_SEARCH_PATH} ${ARDUINO_LIBRARIES_PATHS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/libraries ${ARDUINO_EXTRA_LIBRARIES_PATH})
+
+            set(LIBRARIE_PATHS
+                ${ARDUINO_EXTRA_LIBRARIES_PATH}
+                ${CMAKE_CURRENT_SOURCE_DIR}/ano_libraries
+                ${CMAKE_CURRENT_SOURCE_DIR}/libraries
+                ${CMAKE_CURRENT_SOURCE_DIR}
+                ${include_dirs}
+                ${ARDUINO_LIBRARIES_PATHS}
+                ${LIBRARY_SEARCH_PATH})
+
+          foreach (LIB_SEARCH_PATH ${LIBRARIE_PATHS})
             if (EXISTS ${LIB_SEARCH_PATH}/${INCLUDE_NAME}/${CMAKE_MATCH_1})
               list(APPEND ARDUINO_LIBS ${LIB_SEARCH_PATH}/${INCLUDE_NAME})
               break()
@@ -472,7 +448,6 @@ function(setup_arduino_library VAR_NAME BOARD_ID LIB_PATH COMPILE_FLAGS LINK_FLA
     find_c_sources(LIB_C_FILES ${LIB_PATH} ${${LIB_SHORT_NAME}_RECURSE})
     find_cxx_sources(LIB_CXX_FILES ${LIB_PATH} ${${LIB_SHORT_NAME}_RECURSE})
     set(LIB_SRCS ${LIB_C_FILES} ${LIB_CXX_FILES})
-    #    find_sources(LIB_SRCS ${LIB_PATH} ${${LIB_SHORT_NAME}_RECURSE})
     if (LIB_SRCS)
       message(STATUS "Generating ${TARGET_LIB_NAME} for library ${LIB_NAME}")
       arduino_debug_msg("Generating Arduino ${LIB_NAME} library")
@@ -621,25 +596,22 @@ function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLA
       COMMENT "Generating HEX image"
       VERBATIM)
 
-  #  # Display target size
-  #  add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-  #      COMMAND ${CMAKE_COMMAND}
-  #      ARGS -DFIRMWARE_IMAGE=${TARGET_PATH}.elf
-  #      -DMCU=${${BOARD_ID}${ARDUINO_CPUMENU}.build.mcu}
-  #      -DEEPROM_IMAGE=${TARGET_PATH}.eep
-  #      -P ${ARDUINO_SIZE_SCRIPT}
-  #      COMMENT "Calculating image size"
-  #      VERBATIM)
+  # Display target size
+  add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+      COMMAND ano size "${CMAKE_CURRENT_SOURCE_DIR}"
+      -p ${EXECUTABLE_OUTPUT_PATH}
+      -n ${TARGET_NAME}
+      COMMENT "Calculating image size"
+      VERBATIM)
 
-  #  # Create ${TARGET_NAME}-size target
-  #  add_custom_target(${TARGET_NAME}-size
-  #      COMMAND ${CMAKE_COMMAND}
-  #      -DFIRMWARE_IMAGE=${TARGET_PATH}.elf
-  #      -DMCU=${${BOARD_ID}${ARDUINO_CPUMENU}.build.mcu}
-  #      -DEEPROM_IMAGE=${TARGET_PATH}.eep
-  #      -P ${ARDUINO_SIZE_SCRIPT}
-  #      DEPENDS ${TARGET_NAME}
-  #      COMMENT "Calculating ${TARGET_NAME} image size")
+  # Create ${TARGET_NAME}-size target
+  add_custom_target(${TARGET_NAME}-size
+      COMMAND ano size "${CMAKE_CURRENT_SOURCE_DIR}"
+      -p ${EXECUTABLE_OUTPUT_PATH}
+      -n ${TARGET_NAME}
+      DEPENDS ${TARGET_NAME}
+      COMMENT "Calculating ${TARGET_NAME} image size"
+      VERBATIM)
 
 endfunction()
 
@@ -890,14 +862,14 @@ if (NOT ARDUINO_INITIALIZED)
     list(APPEND ARDUINO_LIBRARIES_PATHS ${ARDUINO_BUILTIN_LIBRARIES_PATH})
   endif ()
 
-  find_file(ARDUINO_DOC_LIBRARIES_PATH
+  find_file(ARDUINO_SKETCH_LIBRARIES_PATH
       NAMES libraries
-      PATHS ${ARDUINO_DOC_PATH}
+      PATHS ${ARDUINO_SKETCH_PATH}
       DOC "Path to directory containing the Arduino custom libraries."
       NO_SYSTEM_ENVIRONMENT_PATH)
 
-  if (ARDUINO_DOC_LIBRARIES_PATH)
-    list(APPEND ARDUINO_LIBRARIES_PATHS ${ARDUINO_DOC_LIBRARIES_PATH})
+  if (ARDUINO_SKETCH_LIBRARIES_PATH)
+    list(APPEND ARDUINO_LIBRARIES_PATHS ${ARDUINO_SKETCH_LIBRARIES_PATH})
   endif ()
 
   find_file(ARDUINO_PLATFORM_LIBRARIES_PATH
@@ -913,7 +885,7 @@ if (NOT ARDUINO_INITIALIZED)
   set(ARDUINO_INITIALIZED True)
   mark_as_advanced(
       ARDUINO_BUILTIN_LIBRARIES_PATH
-      ARDUINO_DOC_LIBRARIES_PATH
+      ARDUINO_SKETCH_LIBRARIES_PATH
       ARDUINO_PLATFORM_LIBRARIES_PATH
       ARDUINO_LIBRARIES_PATHS)
 endif ()
