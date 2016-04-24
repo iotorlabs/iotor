@@ -8,33 +8,27 @@ include(CMakeParseArguments)
 function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
   message(STATUS "Generating ${INPUT_NAME}")
   parse_generator_arguments(${INPUT_NAME} INPUT
-      "NO_AUTOLIBS;MANUAL"                  # Options
-      "SKETCH"        # One Value Keywords
+      ""
+      "SKETCH"                                # One Value Keywords
       "SERIAL;SRCS;HDRS;LIBS;ARDLIBS;AFLAGS"  # Multi Value Keywords
       ${ARGN})
-
-  if (NOT INPUT_MANUAL)
-    set(INPUT_MANUAL FALSE)
-  endif ()
 
   set(ALL_LIBS)
   set(ALL_SRCS ${INPUT_SRCS} ${INPUT_HDRS})
   set(LIB_DEP_INCLUDES)
 
-  if (NOT INPUT_MANUAL)
-    setup_arduino_core(CORE_LIB ${BOARD_ID})
-  endif ()
+  setup_arduino_core(CORE_LIB ${BOARD_ID})
 
-  if (NOT "${INPUT_SKETCH}" STREQUAL "")
-    get_filename_component(INPUT_SKETCH "${INPUT_SKETCH}" ABSOLUTE)
-    setup_arduino_sketch(${INPUT_NAME} ${INPUT_SKETCH} ALL_SRCS)
-    if (IS_DIRECTORY "${INPUT_SKETCH}")
-      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH}\"")
-    else ()
-      get_filename_component(INPUT_SKETCH_PATH "${INPUT_SKETCH}" PATH)
-      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH_PATH}\"")
-    endif ()
-  endif ()
+  #  if (NOT "${INPUT_SKETCH}" STREQUAL "")
+  #    get_filename_component(INPUT_SKETCH "${INPUT_SKETCH}" ABSOLUTE)
+  #    setup_arduino_sketch(${INPUT_NAME} ${INPUT_SKETCH} ALL_SRCS)
+  #    if (IS_DIRECTORY "${INPUT_SKETCH}")
+  #      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH}\"")
+  #    else ()
+  #      get_filename_component(INPUT_SKETCH_PATH "${INPUT_SKETCH}" PATH)
+  #      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH_PATH}\"")
+  #    endif ()
+  #  endif ()
 
   required_variables(VARS ALL_SRCS MSG "must define SRCS or SKETCH for target ${INPUT_NAME}")
 
@@ -44,22 +38,20 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
     set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${LIB_DEP}\" -I\"${LIB_DEP}/src\"")
   endforeach ()
 
-  if (NOT INPUT_NO_AUTOLIBS)
-    setup_arduino_libraries(ALL_LIBS ${BOARD_ID} "${ALL_SRCS}" "${INPUT_ARDLIBS}" "${LIB_DEP_INCLUDES}" "")
-    foreach (LIB_INCLUDES ${ALL_LIBS_INCLUDES})
-      arduino_debug_msg("Arduino Library Includes: ${LIB_INCLUDES}")
-      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} ${LIB_INCLUDES}")
-    endforeach ()
-  endif ()
+  setup_arduino_libraries(ALL_LIBS ${BOARD_ID} "${ALL_SRCS}" "${INPUT_ARDLIBS}" "${LIB_DEP_INCLUDES}" "")
+  foreach (LIB_INCLUDES ${ALL_LIBS_INCLUDES})
+    arduino_debug_msg("Arduino Library Includes: ${LIB_INCLUDES}")
+    set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} ${LIB_INCLUDES}")
+  endforeach ()
 
   list(APPEND ALL_LIBS ${CORE_LIB} ${INPUT_LIBS})
 
-  setup_arduino_target(${INPUT_NAME} ${BOARD_ID} "${ALL_SRCS}" "${ALL_LIBS}" "${LIB_DEP_INCLUDES}" "" "${INPUT_MANUAL}")
+  setup_arduino_target(${INPUT_NAME} ${BOARD_ID} "${ALL_SRCS}" "${ALL_LIBS}" "${LIB_DEP_INCLUDES}" "")
 
   setup_arduino_upload(${INPUT_NAME})
 
-  if (INPUT_SERIAL)
-    setup_serial_target(${INPUT_NAME} "${INPUT_SERIAL}" "${INPUT_PORT}")
+  if (SERIAL_PORT_PATH)
+    setup_serial_target(${INPUT_NAME} "${INPUT_SERIAL}" "${SERIAL_PORT_PATH}")
   endif ()
 
 endfunction()
@@ -197,18 +189,17 @@ endfunction()
 #=============================================================================#
 # [PRIVATE/INTERNAL]
 #
-# get_arduino_flags(COMPILE_FLAGS LINK_FLAGS BOARD_ID MANUAL)
+# get_arduino_flags(COMPILE_FLAGS LINK_FLAGS BOARD_ID)
 #
 #       COMPILE_C_FLAGS_VAR -Variable holding compiler C flags
 #       COMPILE_CXX_FLAGS_VAR -Variable holding compiler C++ flags
 #       LINK_FLAGS_VAR - Variable holding linker flags
 #       BOARD_ID - The board id name
-#       MANUAL - (Advanced) Only use AVR Libc/Includes
 #
 # Configures the the build settings for the specified Arduino Board.
 #
 #=============================================================================#
-function(get_arduino_flags COMPILE_C_FLAGS_VAR COMPILE_CXX_FLAGS_VAR LINK_FLAGS_VAR BOARD_ID MANUAL)
+function(get_arduino_flags COMPILE_C_FLAGS_VAR COMPILE_CXX_FLAGS_VAR LINK_FLAGS_VAR BOARD_ID)
   if (BOARD_CORE_PATH)
 
     # output
@@ -220,15 +211,13 @@ function(get_arduino_flags COMPILE_C_FLAGS_VAR COMPILE_CXX_FLAGS_VAR LINK_FLAGS_
     if (DEFINED BUILD_PID)
       set(COMPILE_FLAGS "${COMPILE_FLAGS} -DUSB_PID=${BUILD_PID}")
     endif ()
-    if (NOT MANUAL)
-      set(COMPILE_FLAGS "${COMPILE_FLAGS} -I\"${BOARD_CORE_PATH}\"")
-      foreach (LIB_PATH ${ARDUINO_LIBRARIES_PATHS})
-        set(COMPILE_FLAGS "${COMPILE_FLAGS} -I\"${LIB_PATH}\"")
-      endforeach ()
+    set(COMPILE_FLAGS "${COMPILE_FLAGS} -I\"${BOARD_CORE_PATH}\"")
+    foreach (LIB_PATH ${ARDUINO_LIBRARIES_PATHS})
+      set(COMPILE_FLAGS "${COMPILE_FLAGS} -I\"${LIB_PATH}\"")
+    endforeach ()
 
-      if (BOARD_VARIANT_PATH)
-        set(COMPILE_FLAGS "${COMPILE_FLAGS} -I\"${BOARD_VARIANT_PATH}\"")
-      endif ()
+    if (BOARD_VARIANT_PATH)
+      set(COMPILE_FLAGS "${COMPILE_FLAGS} -I\"${BOARD_VARIANT_PATH}\"")
     endif ()
     set(LINK_FLAGS "")
 
@@ -394,14 +383,14 @@ function(find_arduino_libraries VAR_NAME SRCS ARDLIBS)
               DIRECTORY     # Property Scope
               PROPERTY LINK_DIRECTORIES)
 
-            set(LIBRARIE_PATHS
-                ${ARDUINO_EXTRA_LIBRARIES_PATH}
-                ${CMAKE_CURRENT_SOURCE_DIR}/ano_libraries
-                ${CMAKE_CURRENT_SOURCE_DIR}/libraries
-                ${CMAKE_CURRENT_SOURCE_DIR}
-                ${include_dirs}
-                ${ARDUINO_LIBRARIES_PATHS}
-                ${LIBRARY_SEARCH_PATH})
+          set(LIBRARIE_PATHS
+              ${ARDUINO_EXTRA_LIBRARIES_PATH}
+              ${CMAKE_CURRENT_SOURCE_DIR}/ano_libraries
+              ${CMAKE_CURRENT_SOURCE_DIR}/libraries
+              ${CMAKE_CURRENT_SOURCE_DIR}
+              ${include_dirs}
+              ${ARDUINO_LIBRARIES_PATHS}
+              ${LIBRARY_SEARCH_PATH})
 
           foreach (LIB_SEARCH_PATH ${LIBRARIE_PATHS})
             if (EXISTS ${LIB_SEARCH_PATH}/${INCLUDE_NAME}/${CMAKE_MATCH_1})
@@ -539,7 +528,7 @@ endfunction()
 #=============================================================================#
 # [PRIVATE/INTERNAL]
 #
-# setup_arduino_target(TARGET_NAME ALL_SRCS ALL_LIBS COMPILE_FLAGS LINK_FLAGS MANUAL)
+# setup_arduino_target(TARGET_NAME ALL_SRCS ALL_LIBS COMPILE_FLAGS LINK_FLAGS)
 #
 #        TARGET_NAME - Target name
 #        BOARD_ID    - Arduino board ID
@@ -547,21 +536,11 @@ endfunction()
 #        ALL_LIBS    - All libraries
 #        COMPILE_FLAGS - Compile flags
 #        LINK_FLAGS    - Linker flags
-#        MANUAL - (Advanced) Only use AVR Libc/Includes
 #
 # Creates an Arduino firmware target.
 #
 #=============================================================================#
-function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLAGS LINK_FLAGS MANUAL)
-
-  #  find_asm_sources(S_FILES ${BOARD_VARIANT_PATH} True)
-
-  #  if (S_FILES)
-  #    get_arduino_asm_flags(ARDUINO_ASM_FLAGS)
-  #    set_source_files_properties(${S_FILES} PROPERTIES COMPILE_FLAGS ${ARDUINO_ASM_FLAGS})
-  #    set(ALL_SRCS ${S_FILES} ${ALL_SRCS})
-  #  endif ()
-
+function(setup_arduino_target TARGET_NAME BOARD_ID ALL_SRCS ALL_LIBS COMPILE_FLAGS LINK_FLAGS)
   add_executable(${TARGET_NAME} ${ALL_SRCS})
   set_target_properties(${TARGET_NAME} PROPERTIES SUFFIX ".elf")
 
@@ -682,6 +661,24 @@ function(setup_arduino_bootloader_upload TARGET_NAME)
 
   add_dependencies(upload ${UPLOAD_TARGET})
 endfunction()
+
+#=============================================================================#
+# [PRIVATE/INTERNAL]
+#
+# setup_serial_target(TARGET_NAME CMD)
+#
+#         TARGET_NAME - Target name
+#         CMD         - Serial terminal command
+#
+# Creates a target (${TARGET_NAME}-serial) for launching the serial termnial.
+#
+#=============================================================================#
+function(setup_serial_target TARGET_NAME CMD SERIAL_PORT)
+  string(CONFIGURE "${CMD}" FULL_CMD @ONLY)
+  add_custom_target(${TARGET_NAME}-serial
+      COMMAND ${FULL_CMD})
+endfunction()
+
 
 #=============================================================================#
 # [PRIVATE/INTERNAL]
@@ -842,13 +839,9 @@ endfunction()
 if (NOT ARDUINO_INITIALIZED)
 
   # Setup Toolchain
-  set(NACO_PROGRAM "ano")
-  if (NOT MMANUAL_SETUP)
-    set(TOOLCHAIN_FILE_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/ArduinoInfomation.cmake)
-    execute_process(COMMAND "${NACO_PROGRAM}" "cmake" "-o${TOOLCHAIN_FILE_PATH}"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    include(${TOOLCHAIN_FILE_PATH})
-  endif ()
+  set(TOOLCHAIN_FILE_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/ArduinoInfomation.cmake)
+  execute_process(COMMAND ano cmake ${CMAKE_CURRENT_SOURCE_DIR} -o${TOOLCHAIN_FILE_PATH})
+  include(${TOOLCHAIN_FILE_PATH})
 
   set(ARDUINO_LIBRARIES_PATHS)
 
@@ -862,14 +855,14 @@ if (NOT ARDUINO_INITIALIZED)
     list(APPEND ARDUINO_LIBRARIES_PATHS ${ARDUINO_BUILTIN_LIBRARIES_PATH})
   endif ()
 
-  find_file(ARDUINO_SKETCH_LIBRARIES_PATH
+  find_file(ARDUINO_BOOK_LIBRARIES_PATH
       NAMES libraries
-      PATHS ${ARDUINO_SKETCH_PATH}
+      PATHS ${ARDUINO_BOOK_PATH}
       DOC "Path to directory containing the Arduino custom libraries."
       NO_SYSTEM_ENVIRONMENT_PATH)
 
-  if (ARDUINO_SKETCH_LIBRARIES_PATH)
-    list(APPEND ARDUINO_LIBRARIES_PATHS ${ARDUINO_SKETCH_LIBRARIES_PATH})
+  if (ARDUINO_BOOK_LIBRARIES_PATH)
+    list(APPEND ARDUINO_LIBRARIES_PATHS ${ARDUINO_BOOK_LIBRARIES_PATH})
   endif ()
 
   find_file(ARDUINO_PLATFORM_LIBRARIES_PATH
@@ -885,7 +878,7 @@ if (NOT ARDUINO_INITIALIZED)
   set(ARDUINO_INITIALIZED True)
   mark_as_advanced(
       ARDUINO_BUILTIN_LIBRARIES_PATH
-      ARDUINO_SKETCH_LIBRARIES_PATH
+      ARDUINO_BOOK_LIBRARIES_PATH
       ARDUINO_PLATFORM_LIBRARIES_PATH
       ARDUINO_LIBRARIES_PATHS)
 endif ()
