@@ -1,6 +1,6 @@
 {
   "name": "ano",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Ano is an Arduino CMake generator.",
   "license": "MIT",
   "repository": "taoyuan/ano",
