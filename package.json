@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "description": "Ano is an Arduino CMake generator.",
   "license": "MIT",
-  "repository": "taoyuan/ano",
+  "repository": {
+    "type": "git",
+    "url": "taoyuan/ano"
+  },
   "authors": [
     {
       "id": "Yuan Tao",
@@ -22,7 +25,19 @@
   },
   "main": "lib/index",
   "keywords": [
-    ""
+    "ano",
+    "arduino",
+    "ino",
+    "size",
+    "upload",
+    "toolchain",
+    "node",
+    "cmake",
+    "library",
+    "manager",
+    "package",
+    "module",
+    "clion"
   ],
   "dependencies": {
     "bluebird": "^3.3.5",
