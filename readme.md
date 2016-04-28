@@ -26,7 +26,7 @@
 * [x] `init` command to create a firmware arduino cmake project.
 * [x] `config` command to config board, board options and serial port for project.
 * [x] Compile and upload based on [arduino-cmake](https://github.com/queezythegreat/arduino-cmake)
-* [ ] Library manager like [bower](http://bower.io)
+* [x] Library manager like [bower](http://bower.io)
 * [ ] Refactor code to use node.js to hold main work, so we can generate some other toolchain files like eclipse, visual studio.
 ...
 
@@ -46,6 +46,14 @@ Config board, board options and port for project
 
 ```sh
 > ano config
+```
+
+### `ano install`
+
+Install a library
+
+```sh
+> ano install firmata/arduino
 ```
 
 ## License

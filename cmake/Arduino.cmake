@@ -1,6 +1,54 @@
 cmake_minimum_required(VERSION 2.8.5)
 include(CMakeParseArguments)
 
+
+#=============================================================================#
+# [PUBLIC/USER]
+# see documentation at top
+#=============================================================================#
+function(GENERATE_ARDUINO_LIBRARY INPUT_NAME)
+    message(STATUS "Generating ${INPUT_NAME}")
+    parse_generator_arguments(${INPUT_NAME} INPUT
+                              ""                  # Options
+                              ""                  # One Value Keywords
+                              "SRCS;HDRS;LIBS"    # Multi Value Keywords
+                              ${ARGN})
+
+    set(ALL_LIBS)
+    set(ALL_SRCS ${INPUT_SRCS} ${INPUT_HDRS})
+
+    setup_arduino_core(CORE_LIB ${BOARD_ID})
+
+    find_arduino_libraries(TARGET_LIBS "${ALL_SRCS}" "")
+
+    set(LIB_DEP_INCLUDES)
+    foreach(LIB_DEP ${TARGET_LIBS})
+        set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${LIB_DEP}\"")
+    endforeach()
+
+    setup_arduino_libraries(ALL_LIBS  ${BOARD_ID} "${ALL_SRCS}" "" "${LIB_DEP_INCLUDES}" "")
+
+    list(APPEND ALL_LIBS ${CORE_LIB} ${INPUT_LIBS})
+
+    add_library(${INPUT_NAME} ${ALL_SRCS})
+
+    get_arduino_flags(ARDUINO_C_FLAGS ARDUINO_CXX_FLAGS ARDUINO_LINK_FLAGS  ${BOARD_ID})
+
+    set_target_properties(${INPUT_NAME} PROPERTIES
+                COMPILE_FLAGS "${ARDUINO_CXX_FLAGS} ${COMPILE_FLAGS} ${LIB_DEP_INCLUDES}"
+                LINK_FLAGS "${ARDUINO_LINK_FLAGS} ${LINK_FLAGS}")
+
+    target_link_libraries(${INPUT_NAME} ${ALL_LIBS})
+
+    SET(ARDUINO_CURRENT_LIBRARY ${INPUT_NAME} CACHE INTERNAL "ARDUINO_CURRENT_LIBRARY")
+    SET(ARDUINO_CURRENT_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "ARDUINO_CURRENT_LIBRARY_DIR")
+
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+      ADD_ARDUINO_SKETCHS("examples")
+      # subdirs("${CMAKE_CURRENT_SOURCE_DIR}/examples")
+    endif()
+endfunction()
+
 #=============================================================================#
 # [PUBLIC/USER]
 # see documentation at top
@@ -9,26 +57,30 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
   message(STATUS "Generating ${INPUT_NAME}")
   parse_generator_arguments(${INPUT_NAME} INPUT
       ""
-      "SKETCH"                                # One Value Keywords
-      "SERIAL;SRCS;HDRS;LIBS;ARDLIBS;AFLAGS"  # Multi Value Keywords
+      "SKETCH"            # One Value Keywords
+      "SRCS;HDRS;SERIAL;ARDLIBS"  # Multi Value Keywords
       ${ARGN})
 
   set(ALL_LIBS)
-  set(ALL_SRCS ${INPUT_SRCS} ${INPUT_HDRS})
+  set(ALL_SRCS)
   set(LIB_DEP_INCLUDES)
 
   setup_arduino_core(CORE_LIB ${BOARD_ID})
 
-  #  if (NOT "${INPUT_SKETCH}" STREQUAL "")
-  #    get_filename_component(INPUT_SKETCH "${INPUT_SKETCH}" ABSOLUTE)
-  #    setup_arduino_sketch(${INPUT_NAME} ${INPUT_SKETCH} ALL_SRCS)
-  #    if (IS_DIRECTORY "${INPUT_SKETCH}")
-  #      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH}\"")
-  #    else ()
-  #      get_filename_component(INPUT_SKETCH_PATH "${INPUT_SKETCH}" PATH)
-  #      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH_PATH}\"")
-  #    endif ()
-  #  endif ()
+  if (NOT "${INPUT_SKETCH}" STREQUAL "")
+    get_filename_component(INPUT_SKETCH "${INPUT_SKETCH}" ABSOLUTE)
+    setup_arduino_sketch(${INPUT_NAME} ${INPUT_SKETCH} ALL_SRCS)
+    if (IS_DIRECTORY "${INPUT_SKETCH}")
+      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH}\"")
+    else ()
+      get_filename_component(INPUT_SKETCH_PATH "${INPUT_SKETCH}" PATH)
+      set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${INPUT_SKETCH_PATH}\"")
+    endif ()
+  endif ()
+
+  set(ALL_SRCS ${ALL_SRCS} ${INPUT_SRCS} ${INPUT_HDRS})
+
+  # EXTENSIFY_CPP(${SRCS})
 
   required_variables(VARS ALL_SRCS MSG "must define SRCS or SKETCH for target ${INPUT_NAME}")
 
@@ -46,7 +98,12 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
 
   list(APPEND ALL_LIBS ${CORE_LIB} ${INPUT_LIBS})
 
+  if (ARDUINO_CURRENT_LIBRARY_DIR)
+    set(LIB_DEP_INCLUDES "${LIB_DEP_INCLUDES} -I\"${ARDUINO_CURRENT_LIBRARY_DIR}\" -I\"${ARDUINO_CURRENT_LIBRARY_DIR}/src\"")
+  endif()
+
   setup_arduino_target(${INPUT_NAME} ${BOARD_ID} "${ALL_SRCS}" "${ALL_LIBS}" "${LIB_DEP_INCLUDES}" "")
+  target_link_libraries(${INPUT_NAME} ${ARDUINO_CURRENT_LIBRARY})
 
   setup_arduino_upload(${INPUT_NAME})
 
@@ -56,9 +113,55 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
 
 endfunction()
 
+function(ADD_ARDUINO_SKETCHS SKETCH_DIR)
+  if (SKETCH_DIR)
+    get_filename_component(SKETCH_ABS_DIR "${SKETCH_DIR}" ABSOLUTE)
+  endif()
+
+  if (NOT SKETCH_ABS_DIR)
+    set(SKETCH_ABS_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+  endif()
+
+  file(GLOB SKETCHES RELATIVE ${SKETCH_ABS_DIR} ${SKETCH_ABS_DIR}/*)
+  foreach(SKETCH ${SKETCHES})
+    set(SKETCH_CONFIG "${SKETCH_ABS_DIR}/${SKETCH}/CMakeLists.txt")
+    if(EXISTS ${SKETCH_CONFIG})
+      # If there is a CMakeLists.txt file in the sketch's directory,
+      # it is probably configuration settings. Include it.
+      subdirs("${SKETCH_ABS_DIR}/${SKETCH}")
+    else()
+      setup_arduino_sketch_firmware(${SKETCH_ABS_DIR} ${SKETCH})
+    endif()
+  endforeach()
+endfunction()
+
+# function(ADD_ARDUINO_SKETCH SKETCH_DIR SKETCH)
+#   get_filename_component(SKETCH "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
+#   get_filename_component(SKETCH_DIR "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
+#   setup_arduino_sketch_firmware(${SKETCH_DIR} ${SKETCH})
+# endfunction()
+
 #=============================================================================#
 #                        Internal Functions
 #=============================================================================#
+
+#=============================================================================#
+# [PRIVATE/INTERNAL]
+#
+# EXTENSIFY_CPP()
+#
+# Uisng language C++ for ino and pde file
+#
+#=============================================================================#
+
+# macro(EXTENSIFY_CPP)
+#   foreach(FILE ${ALL_SRCS})
+#     get_filename_component(EXT ${FILE} EXT)
+#     if (EXT STREQUAL ".ino" OR EXT STREQUAL ".pde")
+#       set_source_files_properties(FILE PROPERTIES LANGUAGE CXX)
+#     endif()
+#   endforeach()
+# endmacro()
 
 #=============================================================================#
 # [PRIVATE/INTERNAL]
@@ -401,12 +504,11 @@ function(find_arduino_libraries VAR_NAME SRCS ARDLIBS)
               list(APPEND ARDUINO_LIBS ${LIB_SEARCH_PATH}/${INCLUDE_NAME})
               break()
             endif ()
-            #            get_source_file_property(_header_generated ${LIB_SEARCH_PATH}/${CMAKE_MATCH_1} GENERATED)
-            #            if((EXISTS ${LIB_SEARCH_PATH}/${CMAKE_MATCH_1}) OR ${_header_generated})
-            #              message(*** " ${LIB_SEARCH_PATH}/${INCLUDE_NAME}")
-            #              list(APPEND ARDUINO_LIBS ${LIB_SEARCH_PATH}/${INCLUDE_NAME})
-            #              break()
-            #            endif()
+            get_source_file_property(_header_generated ${LIB_SEARCH_PATH}/${CMAKE_MATCH_1} GENERATED)
+            if((EXISTS ${LIB_SEARCH_PATH}/${CMAKE_MATCH_1}) OR ${_header_generated})
+              list(APPEND ARDUINO_LIBS ${LIB_SEARCH_PATH}/${INCLUDE_NAME})
+              break()
+            endif()
           endforeach ()
         endif ()
       endforeach ()
@@ -683,6 +785,194 @@ endfunction()
 #=============================================================================#
 # [PRIVATE/INTERNAL]
 #
+# setup_arduino_sketch(TARGET_NAME SKETCH_PATH OUTPUT_VAR)
+#
+#      TARGET_NAME - Target name
+#      SKETCH_PATH - Path to sketch directory
+#      OUTPUT_VAR  - Variable name where to save generated sketch source
+#
+# Generates C++ sources from Arduino Sketch.
+#=============================================================================#
+function(setup_arduino_sketch TARGET_NAME SKETCH_PATH OUTPUT_VAR)
+    get_filename_component(SKETCH_NAME "${SKETCH_PATH}" NAME)
+    get_filename_component(SKETCH_PATH "${SKETCH_PATH}" ABSOLUTE)
+
+    if(EXISTS "${SKETCH_PATH}")
+        set(SKETCH_CPP  ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}_${SKETCH_NAME}.cpp)
+
+        if (IS_DIRECTORY "${SKETCH_PATH}")
+            # Sketch directory specified, try to find main sketch...
+            set(MAIN_SKETCH ${SKETCH_PATH}/${SKETCH_NAME})
+
+            if(EXISTS "${MAIN_SKETCH}.pde")
+                set(MAIN_SKETCH "${MAIN_SKETCH}.pde")
+            elseif(EXISTS "${MAIN_SKETCH}.ino")
+                set(MAIN_SKETCH "${MAIN_SKETCH}.ino")
+            else()
+                message(FATAL_ERROR "Could not find main sketch (${SKETCH_NAME}.pde or ${SKETCH_NAME}.ino) at ${SKETCH_PATH}! Please specify the main sketch file path instead of directory.")
+            endif()
+        else()
+            # Sektch file specified, assuming parent directory as sketch directory
+            set(MAIN_SKETCH ${SKETCH_PATH})
+            get_filename_component(SKETCH_PATH "${SKETCH_PATH}" PATH)
+        endif()
+        arduino_debug_msg("sketch: ${MAIN_SKETCH}")
+
+        # Find all sketch files
+        file(GLOB SKETCH_SOURCES ${SKETCH_PATH}/*.pde ${SKETCH_PATH}/*.ino)
+        set(ALL_SRCS ${SKETCH_SOURCES})
+
+        list(REMOVE_ITEM SKETCH_SOURCES ${MAIN_SKETCH})
+        list(SORT SKETCH_SOURCES)
+
+        generate_cpp_from_sketch("${MAIN_SKETCH}" "${SKETCH_SOURCES}" "${SKETCH_CPP}")
+
+        # Regenerate build system if sketch changes
+        add_custom_command(OUTPUT ${SKETCH_CPP}
+                           COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR}
+                           WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                           DEPENDS ${MAIN_SKETCH} ${SKETCH_SOURCES}
+                           COMMENT "Regnerating ${SKETCH_NAME} Sketch")
+        set_source_files_properties(${SKETCH_CPP} PROPERTIES GENERATED TRUE)
+        # Mark file that it exists for find_file
+        set_source_files_properties(${SKETCH_CPP} PROPERTIES GENERATED_SKETCH TRUE)
+
+        set("${OUTPUT_VAR}" ${${OUTPUT_VAR}} ${SKETCH_CPP} PARENT_SCOPE)
+    else()
+        message(FATAL_ERROR "Sketch does not exist: ${SKETCH_PATH}")
+    endif()
+endfunction()
+
+
+#=============================================================================#
+# [PRIVATE/INTERNAL]
+#
+# generate_cpp_from_sketch(MAIN_SKETCH_PATH SKETCH_SOURCES SKETCH_CPP)
+#
+#         MAIN_SKETCH_PATH - Main sketch file path
+#         SKETCH_SOURCES   - Setch source paths
+#         SKETCH_CPP       - Name of file to generate
+#
+# Generate C++ source file from Arduino sketch files.
+#=============================================================================#
+function(generate_cpp_from_sketch MAIN_SKETCH_PATH SKETCH_SOURCES SKETCH_CPP)
+    file(WRITE ${SKETCH_CPP} "// automatically generated by arduino-cmake\n")
+    file(READ  ${MAIN_SKETCH_PATH} MAIN_SKETCH)
+
+    # remove comments
+    remove_comments(MAIN_SKETCH MAIN_SKETCH_NO_COMMENTS)
+
+    # find first statement
+    string(REGEX MATCH "[\n][_a-zA-Z0-9]+[^\n]*" FIRST_STATEMENT "${MAIN_SKETCH_NO_COMMENTS}")
+    string(FIND "${MAIN_SKETCH}" "${FIRST_STATEMENT}" HEAD_LENGTH)
+    if ("${HEAD_LENGTH}" STREQUAL "-1")
+        set(HEAD_LENGTH 0)
+    endif()
+    #message(STATUS "FIRST STATEMENT: ${FIRST_STATEMENT}")
+    #message(STATUS "FIRST STATEMENT POSITION: ${HEAD_LENGTH}")
+    string(LENGTH "${MAIN_SKETCH}" MAIN_SKETCH_LENGTH)
+
+    string(SUBSTRING "${MAIN_SKETCH}" 0 ${HEAD_LENGTH} SKETCH_HEAD)
+    #arduino_debug_msg("SKETCH_HEAD:\n${SKETCH_HEAD}")
+
+    # find the body of the main pde
+    math(EXPR BODY_LENGTH "${MAIN_SKETCH_LENGTH}-${HEAD_LENGTH}")
+    string(SUBSTRING "${MAIN_SKETCH}" "${HEAD_LENGTH}+1" "${BODY_LENGTH}-1" SKETCH_BODY)
+    #arduino_debug_msg("BODY:\n${SKETCH_BODY}")
+
+    # write the file head
+    file(APPEND ${SKETCH_CPP} "#line 1 \"${MAIN_SKETCH_PATH}\"\n${SKETCH_HEAD}")
+
+    # Count head line offset (for GCC error reporting)
+    file(STRINGS ${SKETCH_CPP} SKETCH_HEAD_LINES)
+    list(LENGTH SKETCH_HEAD_LINES SKETCH_HEAD_LINES_COUNT)
+    math(EXPR SKETCH_HEAD_OFFSET "${SKETCH_HEAD_LINES_COUNT}+2")
+
+    # add arduino include header
+    #file(APPEND ${SKETCH_CPP} "\n#line 1 \"autogenerated\"\n")
+    file(APPEND ${SKETCH_CPP} "\n#line ${SKETCH_HEAD_OFFSET} \"${SKETCH_CPP}\"\n")
+    if(ARDUINO_SDK_VERSION VERSION_LESS 1.0)
+        file(APPEND ${SKETCH_CPP} "#include \"WProgram.h\"\n")
+    else()
+        file(APPEND ${SKETCH_CPP} "#include \"Arduino.h\"\n")
+    endif()
+
+    # add function prototypes
+    foreach(SKETCH_SOURCE_PATH ${SKETCH_SOURCES} ${MAIN_SKETCH_PATH})
+        arduino_debug_msg("Sketch: ${SKETCH_SOURCE_PATH}")
+        file(READ ${SKETCH_SOURCE_PATH} SKETCH_SOURCE)
+        remove_comments(SKETCH_SOURCE SKETCH_SOURCE)
+
+        set(ALPHA "a-zA-Z")
+        set(NUM "0-9")
+        set(ALPHANUM "${ALPHA}${NUM}")
+        set(WORD "_${ALPHANUM}")
+        set(LINE_START "(^|[\n])")
+        set(QUALIFIERS "[ \t]*([${ALPHA}]+[ ])*")
+        set(TYPE "[${WORD}]+([ ]*[\n][\t]*|[ ])+")
+        set(FNAME "[${WORD}]+[ ]?[\n]?[\t]*[ ]*")
+        set(FARGS "[(]([\t]*[ ]*[*&]?[ ]?[${WORD}](\\[([${NUM}]+)?\\])*[,]?[ ]*[\n]?)*([,]?[ ]*[\n]?)?[)]")
+        set(BODY_START "([ ]*[\n][\t]*|[ ]|[\n])*{")
+        set(PROTOTYPE_PATTERN "${LINE_START}${QUALIFIERS}${TYPE}${FNAME}${FARGS}${BODY_START}")
+
+        string(REGEX MATCHALL "${PROTOTYPE_PATTERN}" SKETCH_PROTOTYPES "${SKETCH_SOURCE}")
+
+        # Write function prototypes
+        file(APPEND ${SKETCH_CPP} "\n//=== START Forward: ${SKETCH_SOURCE_PATH}\n")
+        foreach(SKETCH_PROTOTYPE ${SKETCH_PROTOTYPES})
+            string(REPLACE "\n" " " SKETCH_PROTOTYPE "${SKETCH_PROTOTYPE}")
+            string(REPLACE "{" "" SKETCH_PROTOTYPE "${SKETCH_PROTOTYPE}")
+            arduino_debug_msg("\tprototype: ${SKETCH_PROTOTYPE};")
+            # " else if(var == other) {" shoudn't be listed as prototype
+            if(NOT SKETCH_PROTOTYPE MATCHES "(if[ ]?[\n]?[\t]*[ ]*[)])")
+                file(APPEND ${SKETCH_CPP} "${SKETCH_PROTOTYPE};\n")
+            else()
+                arduino_debug_msg("\trejected prototype: ${SKETCH_PROTOTYPE};")
+            endif()
+            file(APPEND ${SKETCH_CPP} "${SKETCH_PROTOTYPE};\n")
+        endforeach()
+        file(APPEND ${SKETCH_CPP} "//=== END Forward: ${SKETCH_SOURCE_PATH}\n")
+    endforeach()
+
+    # Write Sketch CPP source
+    get_num_lines("${SKETCH_HEAD}" HEAD_NUM_LINES)
+    file(APPEND ${SKETCH_CPP} "#line ${HEAD_NUM_LINES} \"${MAIN_SKETCH_PATH}\"\n")
+    file(APPEND ${SKETCH_CPP} "\n${SKETCH_BODY}")
+    foreach (SKETCH_SOURCE_PATH ${SKETCH_SOURCES})
+        file(READ ${SKETCH_SOURCE_PATH} SKETCH_SOURCE)
+        file(APPEND ${SKETCH_CPP} "\n//=== START : ${SKETCH_SOURCE_PATH}\n")
+        file(APPEND ${SKETCH_CPP} "#line 1 \"${SKETCH_SOURCE_PATH}\"\n")
+        file(APPEND ${SKETCH_CPP} "${SKETCH_SOURCE}")
+        file(APPEND ${SKETCH_CPP} "\n//=== END : ${SKETCH_SOURCE_PATH}\n")
+    endforeach()
+endfunction()
+
+function(setup_arduino_sketch_firmware SKETCH_DIR SKETCH)
+  set(SKETCH_SOURCE_CPP "${SKETCH_DIR}/${SKETCH}/${SKETCH}.cpp")
+  set(SKETCH_SOURCE_INO "${SKETCH_DIR}/${SKETCH}/${SKETCH}.ino")
+  set(SKETCH_SOURCE_PDE "${SKETCH_DIR}/${SKETCH}/${SKETCH}.pde")
+
+  get_filename_component(SKETCH_DIR_NAME ${SKETCH_DIR} NAME)
+  set(SKETCH_TARGET_NAME ${SKETCH})
+  if(NOT ${SKETCH_DIR_NAME} STREQUAL "sketches" AND NOT ${SKETCH_DIR_NAME} STREQUAL "examples")
+    set(SKETCH_TARGET_NAME "${SKETCH_DIR_NAME}_${SKETCH_TARGET_NAME}")
+  endif()
+
+  if(EXISTS ${SKETCH_SOURCE_CPP})
+    GENERATE_ARDUINO_FIRMWARE(${SKETCH_TARGET_NAME}
+      SRCS ${SKETCH_SOURCE_CPP})
+  elseif(EXISTS ${SKETCH_SOURCE_INO})
+    GENERATE_ARDUINO_FIRMWARE(${SKETCH_TARGET_NAME}
+      SKETCH ${SKETCH_SOURCE_INO})
+  elseif(EXISTS ${SKETCH_SOURCE_PDE})
+    GENERATE_ARDUINO_FIRMWARE(${SKETCH_TARGET_NAME}
+      SKETCH ${SKETCH_SOURCE_PDE})
+  endif()
+endfunction(setup_arduino_sketch_firmware)
+
+#=============================================================================#
+# [PRIVATE/INTERNAL]
+#
 # print_list(SETTINGS_LIST)
 #
 #      SETTINGS_LIST - Variables name of settings list
@@ -837,7 +1127,6 @@ endfunction()
 #                          Initialization
 #=============================================================================#
 if (NOT ARDUINO_INITIALIZED)
-
   # Setup Toolchain
   set(TOOLCHAIN_FILE_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/ArduinoInfomation.cmake)
   execute_process(COMMAND ano cmake ${CMAKE_CURRENT_SOURCE_DIR} -o${TOOLCHAIN_FILE_PATH})
