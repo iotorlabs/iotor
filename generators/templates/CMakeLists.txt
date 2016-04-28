@@ -12,7 +12,9 @@ generate_arduino_library({{name}}
   HDRS {{name}}.h
   SRCS {{name}}.cpp)
 {{else}}
+file(GLOB SRCS *.h *.cpp)
 # Command to generate code arduino firmware (.hex file)
 generate_arduino_firmware({{name}}
-  SKETCH {{name}}.ino)
+  SKETCH {{name}}.ino
+  SRCS ${SRCS})
 {{/if}}
