@@ -2,8 +2,6 @@
 
 > An arduino library manager and toolchain generator based on CMake developed by NodeJS.
 
-ANO is a generic arduino cmake generator  and generic arduino library manager.
-
 ## Features
 
 * Suppose to support all boards that arduino supported including 3rd party ARM boards
