@@ -22,7 +22,7 @@
 ## Requirements
 
 * Base requirements:
-  * Make - [http://www.cmake.org/cmake/resources/software.html](http://www.cmake.org/cmake/resources/software.html)
+  * CMake - [http://www.cmake.org/cmake/resources/software.html](http://www.cmake.org/cmake/resources/software.html)
   * Arduino SDK - [http://www.arduino.cc/en/Main/Software](http://www.arduino.cc/en/Main/Software)
   * NodeJS - https://nodejs.org/
 * Linux requirements:
@@ -30,7 +30,7 @@
   * `binutils-avr` - AVR binary tools
   * `avr-libc` - AVR C library
   * `avrdude` - Firmware uploader
-  * `[arm-none-eabi-gcc]` - ARM cross compile toolchain
+  * `arm-none-eabi-gcc` - ARM cross compile toolchain
 
 ## Thanks
 
@@ -45,17 +45,113 @@ I would like to thank all the people that contributed to the following great pro
 > npm i -g ano
 ```
 
+## Getting Started
+
+The following instructions are for ***nix** type systems, specifically this is a Linux example.
+
+In short you can get up and running using the following commands:
+
+```
+mkdir build
+cd build
+cmake ..
+make
+make upload        # to upload all firmware images             [optional]
+make blink-serial  # to get a serial terminal to wire_serial   [optional]
+```
+
+For a more detailed explanation.
+
+### Initializing firmware project
+
+```sh
+# Initializing project
+$ ano init
+```
+
+Interactively initializing project by select `firmware` for the first prompt in a empty folder or existing project dir.
+
+When `init` in an existing project dir, it will skip all existing files and create the necessary files that not exists. So we can apply `ano` to any existing arduino project easily.
+
+Firmware project structure:
+
+```
+Project
++-- .anous.json
++-- ano.json
++-- CMakeLists.txt
++-- <Project>.ino
+```
+
+- `.anous.json` is the project user settings file. Boards and Port settings defined in there.
+- `ano.json` is the ano config file to define project's name, version and dependencies.
+- `CMakeLists.txt` is the cmake main file
+- `<Project>.ino` it the main `ino` source file. `<Project>` name is depended on the parent folder name.
+
+### Select the board
+
+`init` command will generate a default `.anous.json` using current Arduino board and serial port settings. If that is not match the real situation, just run `ano config` to change it interactively.
+
+### Creating a build directory
+
+CMake has a great feature called out-of-source builds, what this means is the building is done in a completely separate directory from where the sources are. The benefit of this is you don't have any clutter in your source directory and you won't accidentally commit something that is auto-generated.
+
+So let's create that build directory:
+
+```
+mkdir build
+cd build
+```
+
+### Creating the build system
+
+Now let's create the build system that will create our firmware:
+
+```
+cmake ..
+
+```
+
+If you rather use a GUI, use:
+
+```
+cmake-gui ..
+```
+
+### Building
+
+Next we will build everything:
+
+```
+make
+```
+
+### Uploading
+
+Once everything built correctly we can upload. Depending on your Arduino you will have to update the serial port used for uploading the firmware. To change the port  just run `ano config` to change it interactively.
+
+Ok lets do a upload of all firmware images:
+
+```
+make upload
+
+```
+
+If you have an upload sync error then try resetting/ power cycling the board before starting the upload process.
+
+__NOTE__ Of cause, you can use any ide as you like, such as [CLion](https://www.jetbrains.com/clion/) (Unfortunately, there is no free version)
+
 ## Usage
 
-See complete command line reference at [Commands](COMMANDS.md)
+>  See complete command line reference at [Commands](docs/COMMANDS.md)
 
-### Developing firmware
-...
+`ano` support firmware and library project.
 
-#### Creating firmware project
-...
+A `firmware` project is the project that contains the main `.ino` and other `.h` and `.cpp` files. `ano` will generate a upload target for firmware project.
 
-#### Installing libraries and dependencies
+A `library` project is the project that contains the `<Library>.h` and all source files. `ano` will build an examples auto load tool for  sub `examples` folder.
+
+### Installing libraries and dependencies
 
 ```sh
 # install dependencies listed in ano.json
@@ -68,20 +164,47 @@ $ ano install <library> --save
 $ ano install <library>#<version> --save
 ```
 
-#### Using libraries
-...
+### Using libraries
 
-#### Uninstalling libraries
-...
+As soon as creating an `ano` project, we can use it as a generic cmake project. We can use arduino library as usual.
 
-### Developing libraries
-...
+And also, we can `ano install` a 3rd party library from git, local or an url to `ano_libraries`. Use it just in `<Project>.ino`:
 
-#### Creating library project
-...
+```c++
+#include <Arduino.h>
+#include "Library.h" // The 3rd party library installed by "ano install"
 
-#### Creating an example
-...
+void setup() {
+  ...
+}
+
+void loop() {
+  ...
+}
+```
+
+### Uninstalling libraries
+To uninstall a locally installed library:
+
+```shell
+# Uninstall library from ano-libraries
+$ ano uninstall <library-name>
+
+# Uninstall library from ano-libraries and remove from ano.json
+$ ano uninstall <library-name> --save 
+```
+
+### Creating library
+Interactively initializing project by select `library` for the first prompt in a empty folder or existing project dir.
+
+### Creating examples of library
+* Create `examples` folder in library dir if not exists. 
+
+
+* Create an example folder in `examples`
+* Create the main `ino` file with the same name as the parent folder
+
+Finally `cmake` and `make` 
 
 Resources
 ---------
