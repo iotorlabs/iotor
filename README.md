@@ -62,7 +62,7 @@ make blink-serial  # to get a serial terminal to wire_serial   [optional]
 
 For a more detailed explanation.
 
-### Initializing firmware project
+### 1. Initializing firmware project
 
 ```sh
 # Initializing project
@@ -88,11 +88,11 @@ Project
 - `CMakeLists.txt` is the cmake main file
 - `<Project>.ino` it the main `ino` source file. `<Project>` name is depended on the parent folder name.
 
-### Select the board
+### 2. Select the board
 
 `init` command will generate a default `.anous.json` using current Arduino board and serial port settings. If that is not match the real situation, just run `ano config` to change it interactively.
 
-### Creating a build directory
+### 3. Creating a build directory
 
 CMake has a great feature called out-of-source builds, what this means is the building is done in a completely separate directory from where the sources are. The benefit of this is you don't have any clutter in your source directory and you won't accidentally commit something that is auto-generated.
 
@@ -103,7 +103,7 @@ mkdir build
 cd build
 ```
 
-### Creating the build system
+### 4. Creating the build system
 
 Now let's create the build system that will create our firmware:
 
@@ -118,7 +118,7 @@ If you rather use a GUI, use:
 cmake-gui ..
 ```
 
-### Building
+### 5. Building
 
 Next we will build everything:
 
@@ -126,7 +126,7 @@ Next we will build everything:
 make
 ```
 
-### Uploading
+### 6. Uploading
 
 Once everything built correctly we can upload. Depending on your Arduino you will have to update the serial port used for uploading the firmware. To change the port  just run `ano config` to change it interactively.
 
@@ -191,23 +191,22 @@ To uninstall a locally installed library:
 $ ano uninstall <library-name>
 
 # Uninstall library from ano-libraries and remove from ano.json
-$ ano uninstall <library-name> --save 
+$ ano uninstall <library-name> --save
 ```
 
 ### Creating library
 Interactively initializing project by select `library` for the first prompt in a empty folder or existing project dir.
 
 ### Creating examples of library
-* Create `examples` folder in library dir if not exists. 
+* Create `examples` folder in library dir if not exists.
 
 
 * Create an example folder in `examples`
 * Create the main `ino` file with the same name as the parent folder
 
-Finally `cmake` and `make` 
+Finally `cmake` and `make`
 
-Resources
----------
+## Resources 
 
 Here are some resources you might find useful in getting started.
 
