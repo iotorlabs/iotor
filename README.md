@@ -143,7 +143,7 @@ __NOTE__ Of cause, you can use any ide as you like, such as [CLion](https://www.
 
 ## Usage
 
->  See complete command line reference at [Commands](docs/COMMANDS.md)
+>  See complete command line reference at [Commands](docs/COMMANDS.md) and [Options](docs/OPTIONS.md)
 
 `ano` support firmware and library project.
 
