@@ -1,6 +1,8 @@
 module.exports = function (plop) {
   'use strict';
 
+  var Yaml = require('yamljs');
+
   var options = plop.options || {};
   var arduino = options.arduino;
   var settings = arduino.settings;
@@ -21,7 +23,7 @@ module.exports = function (plop) {
       {
         type: 'add',
         path: plop.resolve(arduino.usfile),
-        template: JSON.stringify(settings.dump(), null, '  ')
+        template: Yaml.stringify(settings.dump())
       },
       {
         type: 'add',

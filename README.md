@@ -77,20 +77,20 @@ Firmware project structure:
 
 ```
 Project
-+-- .anous.json
-+-- ano.json
++-- ano.yml
++-- library.json
 +-- CMakeLists.txt
 +-- <Project>.ino
 ```
 
-- `.anous.json` is the project user settings file. Boards and Port settings defined in there.
-- `ano.json` is the ano config file to define project's name, version and dependencies.
+- `ano.yml` is the project user settings file. Boards and Port settings defined in there.
+- `library.json` is the ano config file to define project's name, version and dependencies.
 - `CMakeLists.txt` is the cmake main file
 - `<Project>.ino` it the main `ino` source file. `<Project>` name is depended on the parent folder name.
 
 ### 2. Select the board
 
-`init` command will generate a default `.anous.json` using current Arduino board and serial port settings. If that is not match the real situation, just run `ano config` to change it interactively.
+`init` command will generate a default `ano.yml` using current Arduino board and serial port settings. If that is not match the real situation, just run `ano config` to change it interactively.
 
 ### 3. Creating a build directory
 
@@ -154,13 +154,13 @@ A `library` project is the project that contains the `<Library>.h` and all sourc
 ### Installing libraries and dependencies
 
 ```sh
-# install dependencies listed in ano.json
+# install dependencies listed in library.json
 $ ano install
 
-# install a library and add it to ano.json
+# install a library and add it to library.json
 $ ano install <library> --save
 
-# install specific version of a library and add it to ano.json
+# install specific version of a library and add it to library.json
 $ ano install <library>#<version> --save
 ```
 
@@ -190,7 +190,7 @@ To uninstall a locally installed library:
 # Uninstall library from ano-libraries
 $ ano uninstall <library-name>
 
-# Uninstall library from ano-libraries and remove from ano.json
+# Uninstall library from ano-libraries and remove from library.json
 $ ano uninstall <library-name> --save
 ```
 
@@ -206,7 +206,7 @@ Interactively initializing project by select `library` for the first prompt in a
 
 Finally `cmake` and `make`
 
-## Resources 
+## Resources
 
 Here are some resources you might find useful in getting started.
 

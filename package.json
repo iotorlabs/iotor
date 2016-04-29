@@ -57,6 +57,7 @@
     "numeral": "^1.5.3",
     "ploper": "latest",
     "serialport": "^2.1.0",
+    "yamljs": "^0.2.7",
     "yargs": "^4.6.0"
   },
   "devDependencies": {

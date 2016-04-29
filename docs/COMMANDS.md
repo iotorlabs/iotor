@@ -76,11 +76,11 @@ Installs project dependencies recursively.
 
 Project dependencies consist of:
 
-1. `dependencies` specified in `ano.json` of project
-2. All “external” dependencies not specified in`ano.json`, but present in `ano_libraries`
+1. `dependencies` specified in `library.json` of project
+2. All “external” dependencies not specified in`library.json`, but present in `ano_libraries`
 3. Any additional `<endpoint>` passed as an argument to this command
 
-When `--save` flag is used, all additional endpoint are saved to `dependencies` in `ano.json`.
+When `--save` flag is used, all additional endpoint are saved to `dependencies` in `library.json`.
 
 ano recommends to always use `--save` flag to achieve reproducible installs between machines.
 
@@ -125,8 +125,8 @@ A version can be:
 
 * -F, --force-latest: Force latest version on conflict
 * -p, --production: Do not install project devDependencies
-* -S, --save: Save installed libraries into the project’s ano.json dependencies
-* -D, --save-dev: Save installed libraries into the project’s ano.json devDependencies
+* -S, --save: Save installed libraries into the project’s library.json dependencies
+* -D, --save-dev: Save installed libraries into the project’s library.json devDependencies
 * -E, --save-exact: Configure installed libraries with an exact version rather than semver
 
 ### link
@@ -172,14 +172,14 @@ Uninstalls local extraneous packages
 $ ano update <name> [<name> ..] [<options>]
 ```
 
-Updates installed packages to their newest version according to ano.json.
+Updates installed packages to their newest version according to library.json.
 
 **update options**
 
 * -F, --force-latest: Force latest version on conflict
 * -p, --production: Do not install project devDependencies
-* -S, --save: Update dependencies in ano.json
-* -D, --save-dev: Update devDependencies in ano.json
+* -S, --save: Update dependencies in library.json
+* -D, --save-dev: Update devDependencies in library.json
 
 ### uninstall
 
@@ -191,8 +191,8 @@ Uninstalls a package locally from your ano_components directory
 
 **uninstall options**
 
-* -S, --save: Remove uninstalled packages from the project’s ano.json dependencies
-* -D, --save-dev: Remove uninstalled packages from the project’s ano.json devDependencies
+* -S, --save: Remove uninstalled packages from the project’s library.json dependencies
+* -D, --save-dev: Remove uninstalled packages from the project’s library.json devDependencies
 
 ### version
 
@@ -200,7 +200,7 @@ Uninstalls a package locally from your ano_components directory
 $ ano version [<newversion> | major | minor | patch]
 ```
 
-Run this in a package directory to bump the version and write the new data back to the ano.json file.
+Run this in a package directory to bump the version and write the new data back to the library.json file.
 
 The newversion argument should be a valid semver string, or a valid second argument to semver.inc (one of “build”, “patch”, “minor”, or “major”). In the second case, the existing version will be incremented by 1 in the specified field.
 
