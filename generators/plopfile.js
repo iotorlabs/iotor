@@ -22,7 +22,7 @@ module.exports = function (plop) {
       },
       {
         type: 'add',
-        path: plop.resolve(arduino.usfile),
+        path: plop.resolve(arduino.pcfile),
         template: Yaml.stringify(settings.dump())
       },
       {
@@ -44,7 +44,7 @@ module.exports = function (plop) {
       },
       {
         type: 'add',
-        path: plop.resolve(arduino.usfile),
+        path: plop.resolve(arduino.pcfile),
         template: JSON.stringify(settings.dump(), null, '  ')
       },
       {

@@ -40,6 +40,7 @@
     "clion"
   ],
   "dependencies": {
+    "ano-config": "^1.5.0-alpha.0",
     "ano-lm": "latest",
     "bluebird": "^3.3.5",
     "chalk": "^1.1.3",

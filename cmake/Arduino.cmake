@@ -488,7 +488,7 @@ function(find_arduino_libraries VAR_NAME SRCS ARDLIBS)
 
           set(LIBRARIE_PATHS
               ${ARDUINO_EXTRA_LIBRARIES_PATH}
-              ${CMAKE_CURRENT_SOURCE_DIR}/ano_libraries
+              ${CMAKE_CURRENT_SOURCE_DIR}/${LOCAL_LIBS_PATH}
               ${CMAKE_CURRENT_SOURCE_DIR}/libraries
               ${CMAKE_CURRENT_SOURCE_DIR}
               ${include_dirs}
