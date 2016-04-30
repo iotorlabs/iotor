@@ -199,8 +199,6 @@ Interactively initializing project by select `library` for the first prompt in a
 
 ### Creating examples of library
 * Create `examples` folder in library dir if not exists.
-
-
 * Create an example folder in `examples`
 * Create the main `ino` file with the same name as the parent folder
 
