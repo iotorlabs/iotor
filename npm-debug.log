@@ -1,0 +1,299 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'link' ]
+2 info using npm@2.15.1
+3 info using node@v4.4.3
+4 verbose linkPkg /Users/taoyuan/devcode/iotorlabs/iotor
+5 silly gentlyRm /usr/local/lib/node_modules/iotor is being purged
+6 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/iotor
+7 verbose link build target /usr/local/lib/node_modules/iotor
+8 verbose install where, what [ '/Users/taoyuan/devcode/iotorlabs/iotor', [] ]
+9 verbose readDependencies loading dependencies from /Users/taoyuan/devcode/iotorlabs/iotor/package.json
+10 verbose install where, deps [ '/Users/taoyuan/devcode/iotorlabs/iotor',
+10 verbose install   [ 'iotor-config',
+10 verbose install     'iotor-lm',
+10 verbose install     'bluebird',
+10 verbose install     'chalk',
+10 verbose install     'co',
+10 verbose install     'collections',
+10 verbose install     'fs-extra',
+10 verbose install     'fullname',
+10 verbose install     'glob',
+10 verbose install     'handlebars',
+10 verbose install     'inquirer',
+10 verbose install     'insight',
+10 verbose install     'interpolate',
+10 verbose install     'lodash',
+10 verbose install     'needs',
+10 verbose install     'numeral',
+10 verbose install     'ploper',
+10 verbose install     'serialport',
+10 verbose install     'yamljs',
+10 verbose install     'yargs',
+10 verbose install     'chai',
+10 verbose install     'co-mocha',
+10 verbose install     'mocha' ] ]
+11 verbose install where, peers [ '/Users/taoyuan/devcode/iotorlabs/iotor', [] ]
+12 verbose installManyTop reading for lifecycle /Users/taoyuan/devcode/iotorlabs/iotor/package.json
+13 info preinstall iotor@0.3.1
+14 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/bluebird/package.json
+15 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/chai/package.json
+16 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/chalk/package.json
+17 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/co/package.json
+18 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/co-mocha/package.json
+19 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/collections/package.json
+20 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/fs-extra/package.json
+21 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/fullname/package.json
+22 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/glob/package.json
+23 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/handlebars/package.json
+24 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/inquirer/package.json
+25 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/insight/package.json
+26 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/interpolate/package.json
+27 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/iotor-config/package.json
+28 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/iotor-lm/package.json
+29 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/lodash/package.json
+30 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/mocha/package.json
+31 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/needs/package.json
+32 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/numeral/package.json
+33 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/ploper/package.json
+34 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-config/package.json
+35 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/package.json
+36 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/serialport/package.json
+37 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/yamljs/package.json
+38 verbose installManyTop reading scoped package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/yargs/package.json
+39 info package.json iotor-lm@1.10.0 No bin file found at bin/iotlm
+40 verbose readDependencies loading dependencies from /Users/taoyuan/devcode/iotorlabs/iotor/package.json
+41 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/bluebird/package.json
+42 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/chai/package.json
+43 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/chalk/package.json
+44 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/co/package.json
+45 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/co-mocha/package.json
+46 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/collections/package.json
+47 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/fs-extra/package.json
+48 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/fullname/package.json
+49 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/glob/package.json
+50 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/handlebars/package.json
+51 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/inquirer/package.json
+52 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/insight/package.json
+53 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/interpolate/package.json
+54 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/iotor-config/package.json
+55 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/iotor-lm/package.json
+56 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/lodash/package.json
+57 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/mocha/package.json
+58 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/needs/package.json
+59 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/numeral/package.json
+60 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/ploper/package.json
+61 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-config/package.json
+62 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/package.json
+63 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/serialport/package.json
+64 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/yamljs/package.json
+65 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/yargs/package.json
+66 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/handlebars/package.json
+67 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/iotlm/package.json
+68 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/json2yaml/package.json
+69 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/mocha/package.json
+70 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/rlm/package.json
+71 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/serialportlist/package.json
+72 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/serialportterm/package.json
+73 verbose targetResolver reading package data from /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin/yaml2json/package.json
+74 verbose already installed skipping co@^4.6.0 /Users/taoyuan/devcode/iotorlabs/iotor
+75 verbose already installed skipping collections@^3.0.0 /Users/taoyuan/devcode/iotorlabs/iotor
+76 verbose already installed skipping fs-extra@^0.28.0 /Users/taoyuan/devcode/iotorlabs/iotor
+77 verbose already installed skipping fullname@^3.0.0 /Users/taoyuan/devcode/iotorlabs/iotor
+78 verbose already installed skipping glob@^7.0.3 /Users/taoyuan/devcode/iotorlabs/iotor
+79 verbose already installed skipping handlebars@^4.0.5 /Users/taoyuan/devcode/iotorlabs/iotor
+80 verbose already installed skipping inquirer@^1.0.2 /Users/taoyuan/devcode/iotorlabs/iotor
+81 verbose already installed skipping insight@^0.8.1 /Users/taoyuan/devcode/iotorlabs/iotor
+82 verbose already installed skipping interpolate@^0.1.0 /Users/taoyuan/devcode/iotorlabs/iotor
+83 verbose already installed skipping lodash@^4.11.1 /Users/taoyuan/devcode/iotorlabs/iotor
+84 verbose already installed skipping needs@^1.0.2 /Users/taoyuan/devcode/iotorlabs/iotor
+85 verbose already installed skipping numeral@^1.5.3 /Users/taoyuan/devcode/iotorlabs/iotor
+86 silly cache add args [ 'ploper@latest', null ]
+87 verbose cache add spec ploper@latest
+88 verbose already installed skipping serialport@^2.1.0 /Users/taoyuan/devcode/iotorlabs/iotor
+89 verbose already installed skipping yamljs@^0.2.7 /Users/taoyuan/devcode/iotorlabs/iotor
+90 verbose already installed skipping yargs@^4.6.0 /Users/taoyuan/devcode/iotorlabs/iotor
+91 silly cache add parsed spec Result {
+91 silly cache add   raw: 'ploper@latest',
+91 silly cache add   scope: null,
+91 silly cache add   name: 'ploper',
+91 silly cache add   rawSpec: 'latest',
+91 silly cache add   spec: 'latest',
+91 silly cache add   type: 'tag' }
+92 silly addNamed ploper@latest
+93 verbose addNamed "latest" is being treated as a dist-tag for ploper
+94 info addNameTag [ 'ploper', 'latest' ]
+95 silly mapToRegistry name ploper
+96 silly mapToRegistry using default registry
+97 silly mapToRegistry registry http://npm.dolink.io/
+98 silly mapToRegistry data Result {
+98 silly mapToRegistry   raw: 'ploper',
+98 silly mapToRegistry   scope: null,
+98 silly mapToRegistry   name: 'ploper',
+98 silly mapToRegistry   rawSpec: '',
+98 silly mapToRegistry   spec: 'latest',
+98 silly mapToRegistry   type: 'tag' }
+99 silly mapToRegistry uri http://npm.dolink.io/ploper
+100 verbose addNameTag registry:http://npm.dolink.io/ploper not in flight; fetching
+101 verbose already installed skipping chai@^3.5.0 /Users/taoyuan/devcode/iotorlabs/iotor
+102 verbose already installed skipping co-mocha@^1.1.2 /Users/taoyuan/devcode/iotorlabs/iotor
+103 verbose already installed skipping mocha@^2.4.5 /Users/taoyuan/devcode/iotorlabs/iotor
+104 verbose already installed skipping iotor-config@latest /Users/taoyuan/devcode/iotorlabs/iotor
+105 verbose already installed skipping iotor-lm@latest /Users/taoyuan/devcode/iotorlabs/iotor
+106 verbose already installed skipping bluebird@^3.3.5 /Users/taoyuan/devcode/iotorlabs/iotor
+107 verbose already installed skipping chalk@^1.1.3 /Users/taoyuan/devcode/iotorlabs/iotor
+108 verbose request uri http://npm.dolink.io/ploper
+109 verbose request no auth needed
+110 info attempt registry request try #1 at 16:30:03
+111 verbose request using bearer token for auth
+112 verbose request id 95796c0d5659ea5b
+113 verbose etag "5faebb2f0557f8c19530ef8db40a0c01"
+114 http request GET http://npm.dolink.io/ploper
+115 http 304 http://npm.dolink.io/ploper
+116 verbose headers { 'x-powered-by': 'Sinopia/2.0.1',
+116 verbose headers   etag: '"5faebb2f0557f8c19530ef8db40a0c01"',
+116 verbose headers   'x-status-cat': 'http://flic.kr/p/aXY3dH',
+116 verbose headers   date: 'Sat, 30 Apr 2016 08:30:05 GMT' }
+117 silly get cb [ 304,
+117 silly get   { 'x-powered-by': 'Sinopia/2.0.1',
+117 silly get     etag: '"5faebb2f0557f8c19530ef8db40a0c01"',
+117 silly get     'x-status-cat': 'http://flic.kr/p/aXY3dH',
+117 silly get     date: 'Sat, 30 Apr 2016 08:30:05 GMT' } ]
+118 verbose etag http://npm.dolink.io/ploper from cache
+119 verbose get saving ploper to /Users/taoyuan/.npm/npm.dolink.io/ploper/.cache.json
+120 verbose correctMkdir /Users/taoyuan/.npm correctMkdir not in flight; initializing
+121 silly addNameTag next cb for ploper with tag latest
+122 silly addNamed ploper@1.0.2
+123 verbose addNamed "1.0.2" is a plain semver version for ploper
+124 silly cache afterAdd ploper@1.0.2
+125 verbose afterAdd /Users/taoyuan/.npm/ploper/1.0.2/package/package.json not in flight; writing
+126 verbose correctMkdir /Users/taoyuan/.npm correctMkdir not in flight; initializing
+127 verbose afterAdd /Users/taoyuan/.npm/ploper/1.0.2/package/package.json written
+128 info already installed ploper@1.0.2
+129 silly install resolved []
+130 info build /Users/taoyuan/devcode/iotorlabs/iotor
+131 info linkStuff iotor@0.3.1
+132 silly linkStuff iotor@0.3.1 has /Users/taoyuan/devcode/iotorlabs as its parent node_modules
+133 verbose linkBins iotor@0.3.1
+134 verbose linkMans iotor@0.3.1
+135 verbose rebuildBundles iotor@0.3.1
+136 verbose rebuildBundles [ '.bin',
+136 verbose rebuildBundles   'bluebird',
+136 verbose rebuildBundles   'chai',
+136 verbose rebuildBundles   'chalk',
+136 verbose rebuildBundles   'co',
+136 verbose rebuildBundles   'co-mocha',
+136 verbose rebuildBundles   'collections',
+136 verbose rebuildBundles   'fs-extra',
+136 verbose rebuildBundles   'fullname',
+136 verbose rebuildBundles   'glob',
+136 verbose rebuildBundles   'handlebars',
+136 verbose rebuildBundles   'inquirer',
+136 verbose rebuildBundles   'insight',
+136 verbose rebuildBundles   'interpolate',
+136 verbose rebuildBundles   'iotor-config',
+136 verbose rebuildBundles   'iotor-lm',
+136 verbose rebuildBundles   'lodash',
+136 verbose rebuildBundles   'mocha',
+136 verbose rebuildBundles   'needs',
+136 verbose rebuildBundles   'numeral',
+136 verbose rebuildBundles   'ploper',
+136 verbose rebuildBundles   'racoon-config',
+136 verbose rebuildBundles   'racoon-lm',
+136 verbose rebuildBundles   'serialport',
+136 verbose rebuildBundles   'yamljs',
+136 verbose rebuildBundles   'yargs' ]
+137 verbose rebuild bundle /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-config
+138 info build /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-config
+139 info preinstall iotor-config@1.6.0
+140 info linkStuff iotor-config@1.6.0
+141 silly linkStuff iotor-config@1.6.0 has /Users/taoyuan/devcode/iotorlabs/iotor/node_modules as its parent node_modules
+142 verbose linkBins iotor-config@1.6.0
+143 verbose linkMans iotor-config@1.6.0
+144 verbose rebuildBundles iotor-config@1.6.0
+145 verbose rebuildBundles [ 'graceful-fs', 'mout', 'optimist', 'osenv', 'untildify' ]
+146 info install iotor-config@1.6.0
+147 info postinstall iotor-config@1.6.0
+148 verbose rebuild bundle /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm
+149 info build /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm
+150 info preinstall iotor-lm@1.10.0
+151 info linkStuff iotor-lm@1.10.0
+152 silly linkStuff iotor-lm@1.10.0 has /Users/taoyuan/devcode/iotorlabs/iotor/node_modules as its parent node_modules
+153 verbose linkBins iotor-lm@1.10.0
+154 verbose link bins [ { iotlm: 'bin/iotlm' },
+154 verbose link bins   '/Users/taoyuan/devcode/iotorlabs/iotor/node_modules/.bin',
+154 verbose link bins   false ]
+155 verbose linkMans iotor-lm@1.10.0
+156 verbose rebuildBundles iotor-lm@1.10.0
+157 verbose rebuildBundles [ '.bin',
+157 verbose rebuildBundles   'abbrev',
+157 verbose rebuildBundles   'archy',
+157 verbose rebuildBundles   'bower-endpoint-parser',
+157 verbose rebuildBundles   'bower-logger',
+157 verbose rebuildBundles   'bower-registry-client',
+157 verbose rebuildBundles   'cardinal',
+157 verbose rebuildBundles   'chmodr',
+157 verbose rebuildBundles   'configstore',
+157 verbose rebuildBundles   'decompress-zip',
+157 verbose rebuildBundles   'destroy',
+157 verbose rebuildBundles   'findup-sync',
+157 verbose rebuildBundles   'fs-write-stream-atomic',
+157 verbose rebuildBundles   'fstream',
+157 verbose rebuildBundles   'fstream-ignore',
+157 verbose rebuildBundles   'github',
+157 verbose rebuildBundles   'glob',
+157 verbose rebuildBundles   'graceful-fs',
+157 verbose rebuildBundles   'inquirer',
+157 verbose rebuildBundles   'is-root',
+157 verbose rebuildBundles   'junk',
+157 verbose rebuildBundles   'lockfile',
+157 verbose rebuildBundles   'lru-cache',
+157 verbose rebuildBundles   'md5-hex',
+157 verbose rebuildBundles   'mkdirp',
+157 verbose rebuildBundles   'mout',
+157 verbose rebuildBundles   'nopt',
+157 verbose rebuildBundles   'opn',
+157 verbose rebuildBundles   'p-throttler',
+157 verbose rebuildBundles   'promptly',
+157 verbose rebuildBundles   'q',
+157 verbose rebuildBundles   'racoon-json',
+157 verbose rebuildBundles   'request',
+157 verbose rebuildBundles   'request-progress',
+157 verbose rebuildBundles   'requireg',
+157 verbose rebuildBundles   'resolve',
+157 verbose rebuildBundles   'retry',
+157 verbose rebuildBundles   'rimraf',
+157 verbose rebuildBundles   'semver',
+157 verbose rebuildBundles   'semver-utils',
+157 verbose rebuildBundles   'shell-quote',
+157 verbose rebuildBundles   'stringify-object',
+157 verbose rebuildBundles   'tar-fs',
+157 verbose rebuildBundles   'tmp',
+157 verbose rebuildBundles   'update-notifier',
+157 verbose rebuildBundles   'user-home',
+157 verbose rebuildBundles   'which' ]
+158 verbose rebuild bundle /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/node_modules/racoon-json
+159 info build /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/node_modules/racoon-json
+160 info preinstall iotor-json@1.2.0
+161 info linkStuff iotor-json@1.2.0
+162 silly linkStuff iotor-json@1.2.0 has /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/node_modules as its parent node_modules
+163 verbose linkBins iotor-json@1.2.0
+164 verbose linkMans iotor-json@1.2.0
+165 verbose rebuildBundles iotor-json@1.2.0
+166 verbose rebuildBundles [ '.bin', 'deep-extend', 'ext-name', 'intersect', 'nprops' ]
+167 info install iotor-json@1.2.0
+168 info postinstall iotor-json@1.2.0
+169 verbose stack Error: ENOENT: no such file or directory, chmod '/Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/bin/iotlm'
+169 verbose stack     at Error (native)
+170 verbose cwd /Users/taoyuan/devcode/iotorlabs/iotor
+171 error Darwin 15.4.0
+172 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "link"
+173 error node v4.4.3
+174 error npm  v2.15.1
+175 error path /Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/bin/iotlm
+176 error code ENOENT
+177 error errno -2
+178 error syscall chmod
+179 error enoent ENOENT: no such file or directory, chmod '/Users/taoyuan/devcode/iotorlabs/iotor/node_modules/racoon-lm/bin/iotlm'
+179 error enoent This is most likely not a problem with npm itself
+179 error enoent and is related to npm not being able to find a file.
+180 verbose exit [ -2, true ]

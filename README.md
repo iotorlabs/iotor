@@ -1,6 +1,6 @@
-# racoon
+# Iotor
 
-> An arduino library manager and toolchain generator based on CMake developed by NodeJS.
+> An Arduino compatible open source ecosystem for IoT development cross-platform build system and library manager.
 
 ## Features
 
@@ -42,7 +42,7 @@ I would like to thank all the people that contributed to the following great pro
 ## Installation
 
 ```sh
-> npm i -g racoon
+> npm i -g iotor
 ```
 
 ## Getting Started
@@ -66,31 +66,31 @@ For a more detailed explanation.
 
 ```sh
 # Initializing project
-$ racoon init
+$ iotor init
 ```
 
 Interactively initializing project by select `firmware` for the first prompt in a empty folder or existing project dir.
 
-When `init` in an existing project dir, it will skip all existing files and create the necessary files that not exists. So we can apply `racoon` to any existing arduino project easily.
+When `init` in an existing project dir, it will skip all existing files and create the necessary files that not exists. So we can apply `iotor` to any existing arduino project easily.
 
 Firmware project structure:
 
 ```
 Project
-+-- racoon.yml
++-- iotor.yml
 +-- library.json
 +-- CMakeLists.txt
 +-- <Project>.ino
 ```
 
-- `racoon.yml` is the project user settings file. Boards and Port settings defined in there.
-- `library.json` is the racoon config file to define project's name, version and dependencies.
+- `iotor.yml` is the project user settings file. Boards and Port settings defined in there.
+- `library.json` is the iotor config file to define project's name, version and dependencies.
 - `CMakeLists.txt` is the cmake main file
 - `<Project>.ino` it the main `ino` source file. `<Project>` name is depended on the parent folder name.
 
 ### 2. Select the board
 
-`init` command will generate a default `racoon.yml` using current Arduino board and serial port settings. If that is not match the real situation, just run `racoon config` to change it interactively.
+`init` command will generate a default `iotor.yml` using current Arduino board and serial port settings. If that is not match the real situation, just run `iotor config` to change it interactively.
 
 ### 3. Creating a build directory
 
@@ -128,7 +128,7 @@ make
 
 ### 6. Uploading
 
-Once everything built correctly we can upload. Depending on your Arduino you will have to update the serial port used for uploading the firmware. To change the port  just run `racoon config` to change it interactively.
+Once everything built correctly we can upload. Depending on your Arduino you will have to update the serial port used for uploading the firmware. To change the port  just run `iotor config` to change it interactively.
 
 Ok lets do a upload of all firmware images:
 
@@ -145,34 +145,34 @@ __NOTE__ Of cause, you can use any ide as you like, such as [CLion](https://www.
 
 >  See complete command line reference at [Commands](docs/COMMANDS.md) and [Options](docs/OPTIONS.md)
 
-`racoon` support firmware and library project.
+`iotor` support firmware and library project.
 
-A `firmware` project is the project that contains the main `.ino` and other `.h` and `.cpp` files. `racoon` will generate a upload target for firmware project.
+A `firmware` project is the project that contains the main `.ino` and other `.h` and `.cpp` files. `iotor` will generate a upload target for firmware project.
 
-A `library` project is the project that contains the `<Library>.h` and all source files. `racoon` will build an examples auto load tool for  sub `examples` folder.
+A `library` project is the project that contains the `<Library>.h` and all source files. `iotor` will build an examples auto load tool for  sub `examples` folder.
 
 ### Installing libraries and dependencies
 
 ```sh
 # install dependencies listed in library.json
-$ racoon install
+$ iotor install
 
 # install a library and add it to library.json
-$ racoon install <library> --save
+$ iotor install <library> --save
 
 # install specific version of a library and add it to library.json
-$ racoon install <library>#<version> --save
+$ iotor install <library>#<version> --save
 ```
 
 ### Using libraries
 
-As soon as creating an `racoon` project, we can use it as a generic cmake project. We can use arduino library as usual.
+As soon as creating an `iotor` project, we can use it as a generic cmake project. We can use arduino library as usual.
 
-And also, we can `racoon install` a 3rd party library from git, local or an url to `ano_libraries`. Use it just in `<Project>.ino`:
+And also, we can `iotor install` a 3rd party library from git, local or an url to `ano_libraries`. Use it just in `<Project>.ino`:
 
 ```c++
 #include <Arduino.h>
-#include "Library.h" // The 3rd party library installed by "racoon install"
+#include "Library.h" // The 3rd party library installed by "iotor install"
 
 void setup() {
   ...
@@ -187,11 +187,11 @@ void loop() {
 To uninstall a locally installed library:
 
 ```shell
-# Uninstall library from racoon-libraries
-$ racoon uninstall <library-name>
+# Uninstall library from iotor-libraries
+$ iotor uninstall <library-name>
 
-# Uninstall library from racoon-libraries and remove from library.json
-$ racoon uninstall <library-name> --save
+# Uninstall library from iotor-libraries and remove from library.json
+$ iotor uninstall <library-name> --save
 ```
 
 ### Creating library

@@ -7,33 +7,33 @@ Command line reference
 ### cache
 
 ```sh
-$ racoon cache <command> [<args>]
+$ iotor cache <command> [<args>]
 ```
 
-Manage racoon cache
+Manage iotor cache
 
 #### cache clean
 ```sh
-$ racoon cache clean
-$ racoon cache clean <name> [<name> ...]
-$ racoon cache clean <name>#<version> [<name>#<version> ..]
+$ iotor cache clean
+$ iotor cache clean <name> [<name> ...]
+$ iotor cache clean <name>#<version> [<name>#<version> ..]
 ```
 Cleans cached packages
 
 #### cache list
 
 ```sh
-$ racoon cache list
-$ racoon cache list <name> [<name> ...]
+$ iotor cache list
+$ iotor cache list <name> [<name> ...]
 ```
 Lists cached packages
 
 ### home
 
 ```sh
-$ racoon home
-$ racoon home <package>
-$ racoon home <package>#<version>
+$ iotor home
+$ iotor home <package>
+$ iotor home <package>#<version>
 ```
 
 Opens a package homepage into your favorite browser.
@@ -42,9 +42,9 @@ If no <package> is passed, opens the homepage of the local package.
 
 ### info
 ```
-$ racoon info <package>
-$ racoon info <package> [<property>]
-$ racoon info <package>#<version> [<property>]
+$ iotor info <package>
+$ iotor info <package> [<property>]
+$ iotor info <package>#<version> [<property>]
 ```
 
 Displays overall information of a package or of a particular version.
@@ -52,7 +52,7 @@ Displays overall information of a package or of a particular version.
 ### init
 
 ```sh
-$ racoon init
+$ iotor init
 ```
 
 Interactively create a firmware or library project.
@@ -60,7 +60,7 @@ Interactively create a firmware or library project.
 ### config
 
 ```sh
-$ racoon config
+$ iotor config
 ```
 
 Interactively config project's board and port settings.
@@ -68,8 +68,8 @@ Interactively config project's board and port settings.
 ### install
 
 ```sh
-$ racoon install [<options>]
-$ racoon install <endpoint> [<endpoint> ..] [<options>]
+$ iotor install [<options>]
+$ iotor install <endpoint> [<endpoint> ..] [<options>]
 ```
 
 Installs project dependencies recursively.
@@ -82,7 +82,7 @@ Project dependencies consist of:
 
 When `--save` flag is used, all additional endpoint are saved to `dependencies` in `library.json`.
 
-racoon recommends to always use `--save` flag to achieve reproducible installs between machines.
+iotor recommends to always use `--save` flag to achieve reproducible installs between machines.
 
 Endpoints can have multiple forms:
 
@@ -132,19 +132,19 @@ A version can be:
 ### link
 
 ```sh
-$ racoon link
-$ racoon link <name> [<local name>]
+$ iotor link
+$ iotor link <name> [<local name>]
 ```
 The link functionality allows developers to easily test their packages. Linking is a two-step process.
 
-Using ‘racoon link’ in a project folder will create a global link. Then, in some other package, racoon link <name> will create a link in the components folder pointing to the previously created link.
+Using ‘iotor link’ in a project folder will create a global link. Then, in some other package, iotor link <name> will create a link in the components folder pointing to the previously created link.
 
-This allows you to easily test a package because changes will be reflected immediately. When the link is no longer necessary, simply remove it with racoon uninstall <name>.
+This allows you to easily test a package because changes will be reflected immediately. When the link is no longer necessary, simply remove it with iotor uninstall <name>.
 
 ### list
 
 ```sh
-$ racoon list [<options>]
+$ iotor list [<options>]
 ```
 List local packages and possible updates.
 
@@ -155,21 +155,21 @@ List local packages and possible updates.
 lookup
 
 ```sh
-$ racoon lookup <name>
+$ iotor lookup <name>
 ```
 Look up a package URL by name
 
 ### prune
 
 ```sh
-$ racoon prune
+$ iotor prune
 ```
 Uninstalls local extraneous packages
 
 ### update
 
 ```sh
-$ racoon update <name> [<name> ..] [<options>]
+$ iotor update <name> [<name> ..] [<options>]
 ```
 
 Updates installed packages to their newest version according to library.json.
@@ -184,7 +184,7 @@ Updates installed packages to their newest version according to library.json.
 ### uninstall
 
 ```sh
-$ racoon uninstall <name> [<name> ..] [<options>]
+$ iotor uninstall <name> [<name> ..] [<options>]
 ```
 
 Uninstalls a package locally from your ano_components directory
@@ -197,7 +197,7 @@ Uninstalls a package locally from your ano_components directory
 ### version
 
 ```sh
-$ racoon version [<newversion> | major | minor | patch]
+$ iotor version [<newversion> | major | minor | patch]
 ```
 
 Run this in a package directory to bump the version and write the new data back to the library.json file.
@@ -209,8 +209,8 @@ If run in a git repo, it will also create a version commit and tag, and fail if 
 **version options**
 
 * `-m, --message`: Custom git commit and tag message
-If supplied with `--message` (shorthand: `-m`) config option, racoon will use it as a commit message when creating a version commit. If the message config contains %s then that will be replaced with the resulting version number. For example:
+If supplied with `--message` (shorthand: `-m`) config option, iotor will use it as a commit message when creating a version commit. If the message config contains %s then that will be replaced with the resulting version number. For example:
 
 ```sh
-$ racoon version patch -m "Upgrade to %s for reasons"
+$ iotor version patch -m "Upgrade to %s for reasons"
 ```
