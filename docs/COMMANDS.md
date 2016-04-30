@@ -7,33 +7,33 @@ Command line reference
 ### cache
 
 ```sh
-$ ano cache <command> [<args>]
+$ racoon cache <command> [<args>]
 ```
 
-Manage ano cache
+Manage racoon cache
 
 #### cache clean
 ```sh
-$ ano cache clean
-$ ano cache clean <name> [<name> ...]
-$ ano cache clean <name>#<version> [<name>#<version> ..]
+$ racoon cache clean
+$ racoon cache clean <name> [<name> ...]
+$ racoon cache clean <name>#<version> [<name>#<version> ..]
 ```
 Cleans cached packages
 
 #### cache list
 
 ```sh
-$ ano cache list
-$ ano cache list <name> [<name> ...]
+$ racoon cache list
+$ racoon cache list <name> [<name> ...]
 ```
 Lists cached packages
 
 ### home
 
 ```sh
-$ ano home
-$ ano home <package>
-$ ano home <package>#<version>
+$ racoon home
+$ racoon home <package>
+$ racoon home <package>#<version>
 ```
 
 Opens a package homepage into your favorite browser.
@@ -42,9 +42,9 @@ If no <package> is passed, opens the homepage of the local package.
 
 ### info
 ```
-$ ano info <package>
-$ ano info <package> [<property>]
-$ ano info <package>#<version> [<property>]
+$ racoon info <package>
+$ racoon info <package> [<property>]
+$ racoon info <package>#<version> [<property>]
 ```
 
 Displays overall information of a package or of a particular version.
@@ -52,7 +52,7 @@ Displays overall information of a package or of a particular version.
 ### init
 
 ```sh
-$ ano init
+$ racoon init
 ```
 
 Interactively create a firmware or library project.
@@ -60,7 +60,7 @@ Interactively create a firmware or library project.
 ### config
 
 ```sh
-$ ano config
+$ racoon config
 ```
 
 Interactively config project's board and port settings.
@@ -68,8 +68,8 @@ Interactively config project's board and port settings.
 ### install
 
 ```sh
-$ ano install [<options>]
-$ ano install <endpoint> [<endpoint> ..] [<options>]
+$ racoon install [<options>]
+$ racoon install <endpoint> [<endpoint> ..] [<options>]
 ```
 
 Installs project dependencies recursively.
@@ -82,7 +82,7 @@ Project dependencies consist of:
 
 When `--save` flag is used, all additional endpoint are saved to `dependencies` in `library.json`.
 
-ano recommends to always use `--save` flag to achieve reproducible installs between machines.
+racoon recommends to always use `--save` flag to achieve reproducible installs between machines.
 
 Endpoints can have multiple forms:
 
@@ -132,19 +132,19 @@ A version can be:
 ### link
 
 ```sh
-$ ano link
-$ ano link <name> [<local name>]
+$ racoon link
+$ racoon link <name> [<local name>]
 ```
 The link functionality allows developers to easily test their packages. Linking is a two-step process.
 
-Using ‘ano link’ in a project folder will create a global link. Then, in some other package, ano link <name> will create a link in the components folder pointing to the previously created link.
+Using ‘racoon link’ in a project folder will create a global link. Then, in some other package, racoon link <name> will create a link in the components folder pointing to the previously created link.
 
-This allows you to easily test a package because changes will be reflected immediately. When the link is no longer necessary, simply remove it with ano uninstall <name>.
+This allows you to easily test a package because changes will be reflected immediately. When the link is no longer necessary, simply remove it with racoon uninstall <name>.
 
 ### list
 
 ```sh
-$ ano list [<options>]
+$ racoon list [<options>]
 ```
 List local packages and possible updates.
 
@@ -155,21 +155,21 @@ List local packages and possible updates.
 lookup
 
 ```sh
-$ ano lookup <name>
+$ racoon lookup <name>
 ```
 Look up a package URL by name
 
 ### prune
 
 ```sh
-$ ano prune
+$ racoon prune
 ```
 Uninstalls local extraneous packages
 
 ### update
 
 ```sh
-$ ano update <name> [<name> ..] [<options>]
+$ racoon update <name> [<name> ..] [<options>]
 ```
 
 Updates installed packages to their newest version according to library.json.
@@ -184,7 +184,7 @@ Updates installed packages to their newest version according to library.json.
 ### uninstall
 
 ```sh
-$ ano uninstall <name> [<name> ..] [<options>]
+$ racoon uninstall <name> [<name> ..] [<options>]
 ```
 
 Uninstalls a package locally from your ano_components directory
@@ -197,7 +197,7 @@ Uninstalls a package locally from your ano_components directory
 ### version
 
 ```sh
-$ ano version [<newversion> | major | minor | patch]
+$ racoon version [<newversion> | major | minor | patch]
 ```
 
 Run this in a package directory to bump the version and write the new data back to the library.json file.
@@ -209,8 +209,8 @@ If run in a git repo, it will also create a version commit and tag, and fail if 
 **version options**
 
 * `-m, --message`: Custom git commit and tag message
-If supplied with `--message` (shorthand: `-m`) config option, ano will use it as a commit message when creating a version commit. If the message config contains %s then that will be replaced with the resulting version number. For example:
+If supplied with `--message` (shorthand: `-m`) config option, racoon will use it as a commit message when creating a version commit. If the message config contains %s then that will be replaced with the resulting version number. For example:
 
 ```sh
-$ ano version patch -m "Upgrade to %s for reasons"
+$ racoon version patch -m "Upgrade to %s for reasons"
 ```

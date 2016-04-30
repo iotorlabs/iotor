@@ -2,4 +2,4 @@
 
 var lm = require('../lib/lm');
 
-console.log(lm.commands);
+console.log(lm.help);

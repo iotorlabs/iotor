@@ -9,9 +9,9 @@
 ```
 Makes various commands more forceful
 
-* `ano install --force` re-installs all installed components. It also forces installation even when there are non-ano directories with the same name in the components directory. Adding --force also bypasses the cache, and writes to the cache anyway.
-* `ano uninstall <package> --force` continues uninstallation even after a dependency conflict
-* `ano register <package> --force` bypasses confirmation. Login is still needed.
+* `racoon install --force` re-installs all installed components. It also forces installation even when there are non-racoon directories with the same name in the components directory. Adding --force also bypasses the cache, and writes to the cache anyway.
+* `racoon uninstall <package> --force` continues uninstallation even after a dependency conflict
+* `racoon register <package> --force` bypasses confirmation. Login is still needed.
 
 ### json
 ```
@@ -53,4 +53,4 @@ Makes output more verbose. It is an alias for `--loglevel=debug`.
 ```
 --allow-root
 ```
-Allows running commands as root. ano is a user command, there is no need to execute it with superuser permissions. However, if you still want to run commands with sudo, use `--allow-root` option.
+Allows running commands as root. racoon is a user command, there is no need to execute it with superuser permissions. However, if you still want to run commands with sudo, use `--allow-root` option.

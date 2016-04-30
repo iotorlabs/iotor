@@ -1,4 +1,4 @@
-# ano
+# racoon
 
 > An arduino library manager and toolchain generator based on CMake developed by NodeJS.
 
@@ -42,7 +42,7 @@ I would like to thank all the people that contributed to the following great pro
 ## Installation
 
 ```sh
-> npm i -g ano
+> npm i -g racoon
 ```
 
 ## Getting Started
@@ -66,31 +66,31 @@ For a more detailed explanation.
 
 ```sh
 # Initializing project
-$ ano init
+$ racoon init
 ```
 
 Interactively initializing project by select `firmware` for the first prompt in a empty folder or existing project dir.
 
-When `init` in an existing project dir, it will skip all existing files and create the necessary files that not exists. So we can apply `ano` to any existing arduino project easily.
+When `init` in an existing project dir, it will skip all existing files and create the necessary files that not exists. So we can apply `racoon` to any existing arduino project easily.
 
 Firmware project structure:
 
 ```
 Project
-+-- ano.yml
++-- racoon.yml
 +-- library.json
 +-- CMakeLists.txt
 +-- <Project>.ino
 ```
 
-- `ano.yml` is the project user settings file. Boards and Port settings defined in there.
-- `library.json` is the ano config file to define project's name, version and dependencies.
+- `racoon.yml` is the project user settings file. Boards and Port settings defined in there.
+- `library.json` is the racoon config file to define project's name, version and dependencies.
 - `CMakeLists.txt` is the cmake main file
 - `<Project>.ino` it the main `ino` source file. `<Project>` name is depended on the parent folder name.
 
 ### 2. Select the board
 
-`init` command will generate a default `ano.yml` using current Arduino board and serial port settings. If that is not match the real situation, just run `ano config` to change it interactively.
+`init` command will generate a default `racoon.yml` using current Arduino board and serial port settings. If that is not match the real situation, just run `racoon config` to change it interactively.
 
 ### 3. Creating a build directory
 
@@ -128,7 +128,7 @@ make
 
 ### 6. Uploading
 
-Once everything built correctly we can upload. Depending on your Arduino you will have to update the serial port used for uploading the firmware. To change the port  just run `ano config` to change it interactively.
+Once everything built correctly we can upload. Depending on your Arduino you will have to update the serial port used for uploading the firmware. To change the port  just run `racoon config` to change it interactively.
 
 Ok lets do a upload of all firmware images:
 
@@ -145,34 +145,34 @@ __NOTE__ Of cause, you can use any ide as you like, such as [CLion](https://www.
 
 >  See complete command line reference at [Commands](docs/COMMANDS.md) and [Options](docs/OPTIONS.md)
 
-`ano` support firmware and library project.
+`racoon` support firmware and library project.
 
-A `firmware` project is the project that contains the main `.ino` and other `.h` and `.cpp` files. `ano` will generate a upload target for firmware project.
+A `firmware` project is the project that contains the main `.ino` and other `.h` and `.cpp` files. `racoon` will generate a upload target for firmware project.
 
-A `library` project is the project that contains the `<Library>.h` and all source files. `ano` will build an examples auto load tool for  sub `examples` folder.
+A `library` project is the project that contains the `<Library>.h` and all source files. `racoon` will build an examples auto load tool for  sub `examples` folder.
 
 ### Installing libraries and dependencies
 
 ```sh
 # install dependencies listed in library.json
-$ ano install
+$ racoon install
 
 # install a library and add it to library.json
-$ ano install <library> --save
+$ racoon install <library> --save
 
 # install specific version of a library and add it to library.json
-$ ano install <library>#<version> --save
+$ racoon install <library>#<version> --save
 ```
 
 ### Using libraries
 
-As soon as creating an `ano` project, we can use it as a generic cmake project. We can use arduino library as usual.
+As soon as creating an `racoon` project, we can use it as a generic cmake project. We can use arduino library as usual.
 
-And also, we can `ano install` a 3rd party library from git, local or an url to `ano_libraries`. Use it just in `<Project>.ino`:
+And also, we can `racoon install` a 3rd party library from git, local or an url to `ano_libraries`. Use it just in `<Project>.ino`:
 
 ```c++
 #include <Arduino.h>
-#include "Library.h" // The 3rd party library installed by "ano install"
+#include "Library.h" // The 3rd party library installed by "racoon install"
 
 void setup() {
   ...
@@ -187,11 +187,11 @@ void loop() {
 To uninstall a locally installed library:
 
 ```shell
-# Uninstall library from ano-libraries
-$ ano uninstall <library-name>
+# Uninstall library from racoon-libraries
+$ racoon uninstall <library-name>
 
-# Uninstall library from ano-libraries and remove from library.json
-$ ano uninstall <library-name> --save
+# Uninstall library from racoon-libraries and remove from library.json
+$ racoon uninstall <library-name> --save
 ```
 
 ### Creating library
