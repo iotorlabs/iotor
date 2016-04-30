@@ -207,7 +207,7 @@ Interactively initializing project by select `library` for the first prompt in a
 Finally `cmake` and `make`
 
 ## Why not PlatformIO
-PlatformIO suppose to create an open source ecosystem for IoT development, cross-platform build system and library manager.It has built a lot of great tools, especially `PlatformIO IDE for Atom`, support so may series boards.
+PlatformIO suppose to create an open source ecosystem for IoT development, cross-platform build system and library manager. It has built a lot of great tools, especially `PlatformIO IDE for Atom`, support so may series boards.
 However, due to its characteristics of hardware support, we can not use Arduino compatible board the first time, such as [Arduino_STM32](https://github.com/rogerclarkmelbourne/Arduino_STM32).
 
 There are some advantages compared to PlatformIO.
