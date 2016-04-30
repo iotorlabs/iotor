@@ -1,52 +1,50 @@
 module.exports = function (plop) {
   'use strict';
 
-  var Yaml = require('yamljs');
-
   var options = plop.options || {};
   var arduino = options.arduino;
   var settings = arduino.settings;
   var name = options.name || plop.folder;
 
-  // setGenerator creates a generator that can be run with "plop generatorName"
-  // plop.setGenerator('Firmware', createGenerator('Firmware Project', 'firmware'));
+  var actions = [
+    {
+      type: 'add',
+      path: plop.resolve('.iotorrc'),
+      templateFile: 'templates/.iotorrc'
+    },
+    {
+      type: 'add',
+      path: plop.resolve('.gitignore'),
+      templateFile: 'templates/.gitignore'
+    },
+    {
+      type: 'add',
+      path: plop.resolve('CMakeLists.txt'),
+      templateFile: 'templates/CMakeLists.txt'
+    },
+    {
+      type: 'add',
+      path: plop.resolve(arduino.pcfile),
+      template: settings.exportToString()
+    }
+  ];
 
   plop.setGenerator('firmware', {
     prompts: [
     ],
-    actions: [
-      {
-        type: 'add',
-        path: plop.resolve('CMakeLists.txt'),
-        templateFile: 'templates/CMakeLists.txt'
-      },
-      {
-        type: 'add',
-        path: plop.resolve(arduino.pcfile),
-        template: Yaml.stringify(settings.dump())
-      },
+    actions: [].concat(actions).concat([
       {
         type: 'add',
         path: plop.resolve('{{name}}.ino'),
         templateFile: 'templates/Project.ino'
       }
-    ]
+    ])
   });
 
   plop.setGenerator('library', {
     prompts: [
     ],
-    actions: [
-      {
-        type: 'add',
-        path: plop.resolve('CMakeLists.txt'),
-        templateFile: 'templates/CMakeLists.txt'
-      },
-      {
-        type: 'add',
-        path: plop.resolve(arduino.pcfile),
-        template: JSON.stringify(settings.dump(), null, '  ')
-      },
+    actions: [].concat(actions).concat([
       {
         type: 'add',
         path: plop.resolve('{{name}}.h'),
@@ -57,6 +55,6 @@ module.exports = function (plop) {
         path: plop.resolve('{{name}}.cpp'),
         templateFile: 'templates/Library.cpp'
       }
-    ]
+    ])
   });
 };
